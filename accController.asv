@@ -1,0 +1,58 @@
+classdef accController < handle
+% Adaptive Cruise Control Controller 
+% Inputs:
+%   vehLDis :Distance from Leading Vehicle
+%   vehPDis :Distance from Precedding Vehicle
+%   vehC    :Controlled Vehicle Object
+%   sample  :current n
+%
+% Outputs:
+%   acc     : desire acceleration
+
+    properties
+        vehicle;
+        vehLDis;    %Distance from Leading Vehicle
+        vehLVel;    %Velocity different from Leading Vehicle
+        vehPDis;    %Distance from Preceding Vehicle
+        vehPVel;    %Velocity different from Preceding Vehicle
+        sample = 1;
+        kp1;
+        kv1;
+        kp2;
+        kv2;
+    end
+
+    methods
+        function obj = accController(vehicle,kp1,kv1,kp2,kv2)
+            % Inputs:
+            %   vehicle :Controlled Vehicle object
+            %   kp1,2   :Spring constant
+            %   kv1,2   :Controlled Vehicle Object
+            obj.vehicle = vehicle;
+            obj.kp1 = kp1;
+            obj.kv1 = kv1;
+            obj.kp2 = kp2;
+            obj.kv2 = kv2;
+        end
+        
+        function acc = getAcc(obj,vehLDis,vehPDis)
+            % Adaptive Cruise Control Controller  
+            % Inputs:
+            %   vehLDis :Distance from Leading Vehicle
+            %   vehPDis :Distance from Precedding Vehicle
+            % Outputs:
+            %   acc     : desire acceleration
+            
+            obj.vehLDis(obj.sample) = vehLDis;
+            obj.vehPDis(obj.sample) = vehPDis;
+            if(obj.sample>1)
+                obj.vehLVel(obj.sample) = gradient(obj.vehL.pos(obj.sample-1:obj.sample));
+                obj.vehPVel(obj.sample) = gradient(obj.vehP.pos(obj.sample-1:obj.sample));
+                acc = obj.kp1 * obj.vehLDis(obj.sample) + ...
+                        obj.kv1 * obj.vehLVel(obj.sample)
+            end
+        end
+    end
+     
+
+end

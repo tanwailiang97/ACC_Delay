@@ -1,0 +1,9 @@
+function distance = delayCompensator(vehDis,vehVel,delInt)
+    if(length(vehDis) < 4) %3 data are required for prediction
+        distance =  vehDis;
+    else
+        vehAcc = gradient(vehVel(end-1:end));
+        
+    end
+        
+end
