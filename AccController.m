@@ -1,12 +1,12 @@
 classdef AccController < handle
 
     properties
-        vehicle;
         vehLDis;    %Distance from Leading Vehicle
         vehLVel;    %Velocity different from Leading Vehicle
         vehPDis;    %Distance from Preceding Vehicle
         vehPVel;    %Velocity different from Preceding Vehicle
-        sample = 1;
+        sample = 1; 
+        vehicle;
         kp1;
         kv1;
         kp2;

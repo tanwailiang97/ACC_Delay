@@ -1,24 +1,15 @@
 %%D:\Mega\Programming\
 clear
-totalTime = 200;% time in second
+%load Vehicle1.mat VehicleA
+totalTime = globalVar(0);% time in second
+period = globalVar(1);  %sampling period
 
-VehicleA = Vehicle(1055,2.306,0.01,2.87,6);
-for x = 1: (totalTime/globalVar(1)-1)
-    VehicleA.move(5)
-end
 
-timePlot = 0:globalVar(1):(totalTime-20);
+timePlot = 0:period:(totalTime-20);
 
 figure(1);
-plot(timePlot,VehicleA.acc((1/globalVar(1):(totalTime-19)/globalVar(1))));
+plot(timePlot,VehicleA.acc((1/period:(totalTime-19)/period)));
 figure(2);
-plot(VehicleA.vel);
+plot(timePlot,VehicleA.vel((1/period:(totalTime-19)/period)));
 figure(3);
-plot(VehicleA.pos);
-
-vel = zeros(1,20);
-acc = vel;
-for x = 3:20
-    fprintf("%.3f ",gradient(gradient(VehicleA.pos(1:x))));
-    disp('\n')
-end
+plot(timePlot,VehicleA.pos((1/period:(totalTime-19)/period)));
