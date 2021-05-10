@@ -8,7 +8,9 @@ period = globalVar(1);  %sampling period
 sensPeriod = globalVar(4);
 
 parfor n = 1:4
+    fprintf("Starting FYP %d...",n);
     result(n,:) = bruteForce(n);
+    fprintf("Done %d...",n);
 end
 
 for n1 = 1:4
@@ -18,7 +20,7 @@ for n1 = 1:4
     fprintf("\n\n");
 end
 
-[w,x,y,z,z1,z2] = result(1,1:6);
+[w,x,y,z,z1] = result(1,1:6);
 %%Plotting Result
 clearvars VehicleB VBCont VehicleC VCCont 
 clearvars VehicleD VDCont VehicleE VECont
@@ -29,9 +31,9 @@ VehicleC = Vehicle(1055,3,0,3,-6,5,16);
 VehicleD = Vehicle(1055,3,0,3,-6,5,9);
 VehicleE = Vehicle(1055,3,0,3,-6,5,2);
 VBCont = AccController(VehicleB,7.92,-0.352,2.96,8.72,0,0);
-VCCont = AccController(VehicleC,w,x,y,z,z1,z2);
-VDCont = AccController(VehicleD,w,x,y,z,z1,z2);
-VECont = AccController(VehicleE,w,x,y,z,z1,z2);
+VCCont = AccController(VehicleC,0,w,x,y,z,z1);
+VDCont = AccController(VehicleD,0,w,x,y,z,z1);
+VECont = AccController(VehicleE,0,w,x,y,z,z1);
 
 vehBAcc = 0;
 vehCAcc = 0;

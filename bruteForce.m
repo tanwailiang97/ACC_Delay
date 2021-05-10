@@ -1,4 +1,4 @@
-function [w,x,y,z,z1,z2,maxDisC,maxDisE,minAcc,maxAcc,dampCount,reward,tocTotal] = bruteForce(n)
+function [w,x,y,z,z1,maxDisC,maxDisE,minAcc,maxAcc,dampCount,reward,tocTotal] = bruteForce(n)
 
     tic 
     load Vehicle.mat VehicleA
@@ -9,19 +9,19 @@ function [w,x,y,z,z1,z2,maxDisC,maxDisE,minAcc,maxAcc,dampCount,reward,tocTotal]
     %maxAcc = max(VehicleA.acc);
     %minAcc = min(VehicleA.acc);
     maxReward = -9999999999;
-    result = [0 0 0 0 0 0];
+    result = [0 0 0 0 0];
 
     wS = 0;
     xS = 0;
     yS = 0;
     zS = 0;
     z1S = 0;
-    z2S = 0;
+    %z2S = 0;
     
     bound = [9 0.9 0.15];
     gap = [1.8 0.3 0.1];
     %minDamp = 999;
-
+    fprintf("Starting %d...",n);
     for s = 1:3
         if s == 1
             if n == 1
@@ -41,7 +41,7 @@ function [w,x,y,z,z1,z2,maxDisC,maxDisE,minAcc,maxAcc,dampCount,reward,tocTotal]
                 for y = (yS-bound(s)):gap(s):(yS+bound(s))
                     for z = (zS-bound(s)):gap(s):(zS+bound(s))
                         for z1 = (z1S-bound(s)):gap(s):(z1S+bound(s))
-                            for z2 = (z2S-bound(s)):gap(s):(z2S+bound(s))
+                            %for z2 = (z2S-bound(s)):gap(s):(z2S+bound(s))
                                 clearvars VehicleB VBCont VehicleC VCCont 
                                 clearvars VehicleD VDCont VehicleE VECont
 
@@ -50,9 +50,9 @@ function [w,x,y,z,z1,z2,maxDisC,maxDisE,minAcc,maxAcc,dampCount,reward,tocTotal]
                                 VehicleD = Vehicle(1055,3,0,3,-6,5,9);
                                 VehicleE = Vehicle(1055,3,0,3,-6,5,2);
                                 VBCont = AccController(VehicleB,7.92,-0.352,2.96,8.72,0,0);
-                                VCCont = AccController(VehicleC,w,x,y,z,z1,z2);
-                                VDCont = AccController(VehicleD,w,x,y,z,z1,z2);
-                                VECont = AccController(VehicleE,w,x,y,z,z1,z2);
+                                VCCont = AccController(VehicleC,0,w,x,y,z,z1);
+                                VDCont = AccController(VehicleD,0,w,x,y,z,z1);
+                                VECont = AccController(VehicleE,0,w,x,y,z,z1);
                                 flag = 9;
                                 %maxDisB = 0;
                                 maxDisC = 0;
@@ -157,14 +157,14 @@ function [w,x,y,z,z1,z2,maxDisC,maxDisE,minAcc,maxAcc,dampCount,reward,tocTotal]
                                     elseif(reward > maxReward) && flag == 0
                                         maxReward = reward;
                                         %minDamp = dampCount;
-                                        result = [w x y z z1 z2];
+                                        result = [w x y z z1];
                                         fprintf("%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t> %.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\n"...
                                             ,w,x,y,z,z1,z2,maxDisC,maxDisE,minAcc,maxAcc,dampCount,reward);
                                     else
                                         fprintf("%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t> Err %.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\n"...
                                             ,w,x,y,z,z1,z2,maxDisC,maxDisE,minAcc,maxAcc,dampCount,reward);
                                     end
-                            end
+                            %end
                         end
                     end
                 end
@@ -176,7 +176,7 @@ function [w,x,y,z,z1,z2,maxDisC,maxDisE,minAcc,maxAcc,dampCount,reward,tocTotal]
     yS = result(3);
     zS = result(4);
     z1S = result(5);
-    z2S = result(6);
+    %z2S = result(6);
     disp(result);
     fprintf('time w:%f\n',toc)
     end
