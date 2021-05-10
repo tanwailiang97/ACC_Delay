@@ -7,26 +7,30 @@ classdef AccController < handle
         vehPVel;    %Velocity different from Preceding Vehicle
         sample = 1; 
         vehicle;
-        kp1;
-        kv1;
-        kp2;
-        kv2;
+        k0;
+        kpP;
+        kvP;
+        kpL;
+        kvL;
+        kv;
     end
 
     methods
-        function obj = accController(vehicle,kp1,kv1,kp2,kv2)
+        function obj = AccController(vehicle,k0,kv,kpP,kvP,kpL,kvL)
             % Inputs:
             %   vehicle :Controlled Vehicle (object)
             %   kp1 & 2 :Spring constant    (Scalar)
             %   kv1 & 2 :Damper Constant    (Scalar)
             obj.vehicle = vehicle;
-            obj.kp1 = kp1;
-            obj.kv1 = kv1;
-            obj.kp2 = kp2;
-            obj.kv2 = kv2;
+            obj.k0 = k0;
+            obj.kpP = kpP;
+            obj.kvP = kvP;
+            obj.kpL = kpL;
+            obj.kvL = kvL;
+            obj.kv = kv;
         end
         
-        function acc = getAcc(obj,vehLDis,vehPDis)
+        function acc = getAcc(obj,vehLDis,vehPDis,vehLVel,vehPVel)
             % Adaptive Cruise Control Controller  
             % Inputs:
             %   vehLDis :Distance from Leading Vehicle   (Scalar)
@@ -34,19 +38,32 @@ classdef AccController < handle
             % Outputs:
             %   acc     : desire acceleration            (Scalar)
             
-            h = obj.vehicle.tao * 2;
+            %h = obj.vehicle.tao * 2;
             obj.vehLDis(obj.sample) = vehLDis;
             obj.vehPDis(obj.sample) = vehPDis;
-            if(obj.sample>1)
-                obj.vehLVel(obj.sample) = gradient(obj.vehL.pos(end-1:end));
-                obj.vehPVel(obj.sample) = gradient(obj.vehP.pos(end-1:end));
-                acc = obj.kp1 * (obj.vehLDis(obj.sample) + ...
+            if(obj.sample>2)
+                %lVel = gradient(obj.vehLDis(end-2:end));
+                %pVel = gradient(obj.vehPDis(end-2:end));
+                obj.vehLVel(obj.sample) = vehLVel;%lVel(end-1);
+                obj.vehPVel(obj.sample) = vehPVel;%pVel(end-1);
+                acc = obj.kpP * obj.vehPDis(obj.sample) + ...
+                      obj.kvP * obj.vehPVel(obj.sample)+...
+                      obj.kv  * obj.vehicle.vel(obj.sample) + ...
+                      obj.k0;
+                %{
+                acc = obj.kp1 * (obj.vehLDis(obj.sample) - ...
                         2 * obj.vehLVel(obj.sample) * h ) +...
                         obj.kv1 * obj.vehLVel(obj.sample) + ...
-                        obj.kp2 * obj.vehPDis(obj.sample + ...
+                        obj.kp2 * (obj.vehPDis(obj.sample) - ...
                         obj.vehLVel(obj.sample) * h ) + ...
                         obj.kv2 * obj.vehPVel(obj.sample);
+                %}
+            else 
+                acc = 0;
             end
+            
+            obj.sample = obj.sample + 1;
+            
         end
     end
      

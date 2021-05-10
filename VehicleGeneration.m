@@ -1,7 +1,7 @@
 totalTime = globalVar(0);% time in second
 period = globalVar(1);  %sampling period
 
-VehicleA = Vehicle(1055,2.306,0.01,3,-6);
+VehicleA = Vehicle(1055,2.306,0.01,3,-6,5,30);
 VehicleA.pos(1) = 30;
 
 
@@ -15,9 +15,9 @@ for x = 1: (totalTime/globalVar(1)-1)
     elseif (x < 26/globalVar(1))  %10 sec acclerate
         VehicleA.move(-5);
     elseif (x < 34/globalVar(1))  %10 sec acclerate
-        VehicleA.move(2.5);
+        VehicleA.move(0);
     elseif (x < 38/globalVar(1))  %10 sec acclerate
-        VehicleA.move(-5);
+        VehicleA.move(2.5);
     else
         VehicleA.move(0);
     end
