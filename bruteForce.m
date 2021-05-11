@@ -1,5 +1,5 @@
 function [w,x,y,z,z1,maxDisC,maxDisE,minAcc,maxAcc,dampCount,reward,tocTotal] = bruteForce(n)
-
+    fprintf("Starting %d...",n);
     tic 
     load Vehicle.mat VehicleA
     totalTime = globalVar(0);% time in second
@@ -8,7 +8,7 @@ function [w,x,y,z,z1,maxDisC,maxDisE,minAcc,maxAcc,dampCount,reward,tocTotal] = 
 
     %maxAcc = max(VehicleA.acc);
     %minAcc = min(VehicleA.acc);
-    maxReward = -9999999999;
+    maxReward = -99999999;
     result = [0 0 0 0 0];
 
     wS = 0;
@@ -21,7 +21,7 @@ function [w,x,y,z,z1,maxDisC,maxDisE,minAcc,maxAcc,dampCount,reward,tocTotal] = 
     bound = [9 0.9 0.15];
     gap = [1.8 0.3 0.1];
     %minDamp = 999;
-    fprintf("Starting %d...",n);
+    
     for s = 1:3
         if s == 1
             if n == 1
@@ -147,23 +147,23 @@ function [w,x,y,z,z1,maxDisC,maxDisE,minAcc,maxAcc,dampCount,reward,tocTotal] = 
                                     end
                                 end
 
-                                    %%Reward Check
-                                    if flag == 1
-                                        %fprintf("%.2f\t%.2f\t%.2f\t%.2f\t= Co\n",w,x,y,z);%Collided
-                                    elseif flag == 2
-                                        %fprintf("%.2f\t%.2f\t%.2f\t%.2f\t= LR\n",w,x,y,z);%Low Reward
-                                    elseif flag == 3   
-                                        %fprintf("%.2f\t%.2f\t%.2f\t%.2f\t= Os\n",w,x,y,z);%UnderShoot
-                                    elseif(reward > maxReward) && flag == 0
-                                        maxReward = reward;
-                                        %minDamp = dampCount;
-                                        result = [w x y z z1];
-                                        fprintf("%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t> %.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\n"...
-                                            ,w,x,y,z,z1,z2,maxDisC,maxDisE,minAcc,maxAcc,dampCount,reward);
-                                    else
-                                        fprintf("%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t> Err %.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\n"...
-                                            ,w,x,y,z,z1,z2,maxDisC,maxDisE,minAcc,maxAcc,dampCount,reward);
-                                    end
+                                %%Reward Check
+                                if flag == 1
+                                    %fprintf("%.2f\t%.2f\t%.2f\t%.2f\t= Co\n",w,x,y,z);%Collided
+                                elseif flag == 2
+                                    %fprintf("%.2f\t%.2f\t%.2f\t%.2f\t= LR\n",w,x,y,z);%Low Reward
+                                elseif flag == 3   
+                                    %fprintf("%.2f\t%.2f\t%.2f\t%.2f\t= Os\n",w,x,y,z);%UnderShoot
+                                elseif(reward > maxReward) && flag == 0
+                                    maxReward = reward;
+                                    %minDamp = dampCount;
+                                    result = [w x y z z1];
+                                    fprintf("%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t> %.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\n"...
+                                        ,w,x,y,z,z1,z2,maxDisC,maxDisE,minAcc,maxAcc,dampCount,reward);
+                                else
+                                    fprintf("%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t> Err %.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\n"...
+                                        ,w,x,y,z,z1,z2,maxDisC,maxDisE,minAcc,maxAcc,dampCount,reward);
+                                end
                             %end
                         end
                     end
@@ -182,5 +182,6 @@ function [w,x,y,z,z1,maxDisC,maxDisE,minAcc,maxAcc,dampCount,reward,tocTotal] = 
     end
     
     tocTotal = toc;
+    fprintf('time w:%f\n',toc)
 end
 
