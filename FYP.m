@@ -1,5 +1,6 @@
 %%D:\Mega\Programming\
 %%D:\WL\UTM\FYP
+%%C:\Users\Liang\Desktop\Programming
 %clear
 
 load Vehicle.mat VehicleA
