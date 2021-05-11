@@ -1,5 +1,6 @@
-function resultSave(param,result)
-    load Vehicle.mat VehicleA
+function resultSave(param,result,parallel,vehicleA)
+    %load Vehicle.mat VehicleA
+    VehicleA = vehicleA;
     totalTime = globalVar(0);% time in second
     period = globalVar(1);  %sampling period
     sensPeriod = globalVar(4);
@@ -61,8 +62,8 @@ function resultSave(param,result)
     timePlot = 0:period:(totalTime-20);
     date = datetime('now','Format','y-MMM-d');
     time = datetime('now','Format','HH-mm-ss');
-    fileLoc = sprintf('FYP/Image/%s/%f %s/',...
-        date,result,time);
+    fileLoc = sprintf('FYP/Image/%s/%f %s-%d/',...
+        date,result,time,parallel);
     
     mkdir(fileLoc)
     txtName = sprintf('%sparam.txt',fileLoc);
