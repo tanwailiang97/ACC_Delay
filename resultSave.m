@@ -4,6 +4,8 @@ function resultSave(param,result,parallel,vehicleA)
     totalTime = globalVar(0);% time in second
     period = globalVar(1);  %sampling period
     sensPeriod = globalVar(4);
+    delL = ceil(globalVar(2)/period);
+    delP = ceil(globalVar(3)/period);
     u = param(1);
     v = param(2);
     w = param(3);
@@ -30,32 +32,33 @@ function resultSave(param,result,parallel,vehicleA)
         VehicleC.move(vehCAcc);
         VehicleD.move(vehDAcc);
         VehicleE.move(vehEAcc);
-        if a > 1
-            vehPDisC = VehicleB.pos(a-1) - VehicleC.pos(a-1) -5 ;
-            vehPDisD = VehicleC.pos(a-1) - VehicleD.pos(a-1) -5 ;
-            vehPDisE = VehicleD.pos(a-1) - VehicleE.pos(a-1) -5 ;
+        if a > delP && a > delL
+            
+            vehPDisC = VehicleB.pos(a-delP) - VehicleC.pos(a-delP) -5 ;
+            vehPDisD = VehicleC.pos(a-delP) - VehicleD.pos(a-delP) -5 ;
+            vehPDisE = VehicleD.pos(a-delP) - VehicleE.pos(a-delP) -5 ;
 
             vehPDisB = VehicleA.pos(a-1) - VehicleB.pos(a-1) -5 ;
             vehPVelB = VehicleA.vel(a-1) - VehicleB.vel(a-1);
             vehBAcc = VBCont.getAcc(0,vehPDisB,0,vehPVelB);
-        end
-        %%Sensor New Data
-        if not(mod(a,sensPeriod/period))
-            vehPVelC = VehicleB.vel(a-1) - VehicleC.vel(a-1);
-            vehPVelD = VehicleC.vel(a-1) - VehicleD.vel(a-1);
-            vehPVelE = VehicleD.vel(a-1) - VehicleE.vel(a-1);
+            %%Sensor New Data
+            if not(mod(a,sensPeriod/period))
+                vehPVelC = VehicleB.vel(a-delP) - VehicleC.vel(a-delP);
+                vehPVelD = VehicleC.vel(a-delP) - VehicleD.vel(a-delP);
+                vehPVelE = VehicleD.vel(a-delP) - VehicleE.vel(a-delP);
 
-            vehLDisC = VehicleA.pos(a-1) - VehicleC.pos(a-1) -5 ;
-            vehLDisD = VehicleB.pos(a-1) - VehicleD.pos(a-1) -5 ;
-            vehLDisE = VehicleC.pos(a-1) - VehicleE.pos(a-1) -5 ;
+                vehLDisC = VehicleA.pos(a-delL) - VehicleC.pos(a-delL) -5 ;
+                vehLDisD = VehicleB.pos(a-delL) - VehicleD.pos(a-delL) -5 ;
+                vehLDisE = VehicleC.pos(a-delL) - VehicleE.pos(a-delL) -5 ;
 
-            vehLVelC = VehicleA.vel(a-1) - VehicleC.vel(a-1);
-            vehLVelD = VehicleB.vel(a-1) - VehicleD.vel(a-1);
-            vehLVelE = VehicleC.vel(a-1) - VehicleE.vel(a-1);
+                vehLVelC = VehicleA.vel(a-delL) - VehicleC.vel(a-delL);
+                vehLVelD = VehicleB.vel(a-delL) - VehicleD.vel(a-delL);
+                vehLVelE = VehicleC.vel(a-delL) - VehicleE.vel(a-delL);
 
-            vehCAcc = VCCont.getAcc(vehLDisC,vehPDisC,vehLVelC,vehPVelC); 
-            vehDAcc = VDCont.getAcc(vehLDisD,vehPDisD,vehLVelD,vehPVelD);
-            vehEAcc = VECont.getAcc(vehLDisE,vehPDisE,vehLVelE,vehPVelE);
+                vehCAcc = VCCont.getAcc(vehLDisC,vehPDisC,vehLVelC,vehPVelC); 
+                vehDAcc = VDCont.getAcc(vehLDisD,vehPDisD,vehLVelD,vehPVelD);
+                vehEAcc = VECont.getAcc(vehLDisE,vehPDisE,vehLVelE,vehPVelE);
+            end
         end
     end
 
