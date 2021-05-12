@@ -4,7 +4,7 @@ function x = globalVar(num)
     SENS_DELAY_1 = 0.2; %200ms sensor delay for Leader
     SENS_DELAY_2 = 0.2; %200ms sensor delay for Preceder
     SENS_PERIOD = 0.06; %60ms update rate
-    PREV_RESULT = -380000*6;
+    PREV_RESULT = -15000000;
     if num == 0
         x = TOTAL_TIME;
     elseif num == 1

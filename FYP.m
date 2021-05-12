@@ -15,12 +15,13 @@ fprintf("%s\nStarting FYP ...\n",datetime('now','Format','y-MMM-d HH-mm-ss'));
 maxParallel = 40;    
 
 parfor parallel = 1:maxParallel
+    
     minReward = globalVar(5);
-    fprintf("Starting Parallel...%d\n",parallel);
+    fprintf("%s\nStarting Parallel...%d\n",datetime('now','Format','y-MMM-d HH-mm-ss'),parallel);
     maxWorker = 20;
-    param = [0 0 0 0 0 0];
+    param = [0.712,-0.032,0.000,1.516,0.000,1.208];
     prevResult = minReward;
-    step = 0.001*2^10;
+    step = 0.001*2^13;
     prevWorker = maxWorker + 2;
     bestWorker = maxWorker + 2;
     flag = 0;
@@ -29,8 +30,11 @@ parfor parallel = 1:maxParallel
     while(1)
         for worker = 1:maxWorker
             %fprintf("Running Worker %d\n",worker);
-            if worker > 12 || prevResult == minReward
+            if worker > 13 || prevResult == minReward
                 newParam(worker,:) = (randi(16,1,6)-8);
+                result(worker) = vehicleRunning(newParam(worker,:),VehicleA);
+            elseif worker == 13
+                newParam(worker,:) = param;
                 result(worker) = vehicleRunning(newParam(worker,:),VehicleA);
             else
                 identity = eye(6);
@@ -49,9 +53,10 @@ parfor parallel = 1:maxParallel
                 fprintf("%.2f,\t",param);
                 fprintf("%.2f,\n",maxResult);
                 flag = 1;
-            elseif (idivide(bestWorker-1,int8(2)) == idivide(prevWorker-1,int8(2)) ||...
-                (bestWorkerOld == bestWorker && bestWorker < maxWorker + 2)) ...
-                && flag == 1
+            elseif ((idivide(bestWorker-1,int8(2)) == idivide(prevWorker-1,int8(2)) ... 
+                    && bestWorker < 13) || (bestWorkerOld == bestWorker && bestWorker < maxWorker + 2)) ...
+                    && flag == 1
+
                 step = step/2;
                 if step <= 0.001
                     %fprintf("low step = %f\n",step);
@@ -62,7 +67,7 @@ parfor parallel = 1:maxParallel
                 fprintf("Worker %d,%d\n",bestWorker,prevWorker);
             end
         else
-            
+            %fprintf("Equal\n");
         end
 
     end
@@ -70,8 +75,8 @@ parfor parallel = 1:maxParallel
 fprintf("%.2f,\t",param);
 resultSave(param,prevResult,parallel,VehicleA);
 
-disp('done')
-fprintf('time:%f\n',toc)
+fprintf('\ndone\n\n')
+%fprintf('time:%f\n',toc)
 
     %for beepCount = 1:3
     %    beep

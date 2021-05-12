@@ -72,7 +72,9 @@ function resultSave(param,result,parallel,vehicleA)
     txtName = sprintf('%sparam.txt',fileLoc);
     fid = fopen(txtName,'w');
     fprintf(fid,"%.3f,",param);
-    fprintf(fid,"\b\t>\t%.8f",result);
+    fprintf(fid,"\nResult\t: %.8f",result);
+    fprintf(fid,"\nDelay\t: %f,%f",globalVar(2),globalVar(3));
+    fprintf(fid,"\nPeriod\t: %f",globalVar(4));
     fclose(fid);
     %writematrix(param,txtName);
     
@@ -129,8 +131,8 @@ function resultSave(param,result,parallel,vehicleA)
 
     fig4 = figure;
     hold on
-    plot(timePlot,VehicleA.pos((1/period:(totalTime-19)/period))...
-                -VehicleB.pos((1/period:(totalTime-19)/period)));
+    %plot(timePlot,VehicleA.pos((1/period:(totalTime-19)/period))...
+    %            -VehicleB.pos((1/period:(totalTime-19)/period)));
     plot(timePlot,VehicleB.pos((1/period:(totalTime-19)/period))...
                 -VehicleC.pos((1/period:(totalTime-19)/period)));
     plot(timePlot,VehicleC.pos((1/period:(totalTime-19)/period))...
@@ -140,7 +142,7 @@ function resultSave(param,result,parallel,vehicleA)
     title('position different');
     xlabel('time(s)');
     ylabel('position(m)');
-    legend({'B','C','D','E'},'Location','southeast');
+    legend({'C','D','E'},'Location','southeast');
     hold off
     imageName = sprintf('%sfig4',fileLoc);
     print(fig4,'-djpeg','-r1000',imageName);
@@ -148,8 +150,8 @@ function resultSave(param,result,parallel,vehicleA)
 
     fig5 = figure;
     hold on
-    plot(timePlot,VehicleA.acc((1/period:(totalTime-19)/period))...
-                -VehicleB.acc((1/period:(totalTime-19)/period)));
+    %plot(timePlot,VehicleA.acc((1/period:(totalTime-19)/period))...
+    %            -VehicleB.acc((1/period:(totalTime-19)/period)));
     plot(timePlot,VehicleB.acc((1/period:(totalTime-19)/period))...
                 -VehicleC.acc((1/period:(totalTime-19)/period)));
     plot(timePlot,VehicleC.acc((1/period:(totalTime-19)/period))...
@@ -159,7 +161,7 @@ function resultSave(param,result,parallel,vehicleA)
     title('accleration different');
     xlabel('time(s)');
     ylabel('acceleration(ms-2)');
-    legend({'B','C','D','E'},'Location','southeast');
+    legend({'C','D','E'},'Location','southeast');
     hold off
     imageName = sprintf('%sfig5',fileLoc);
     print(fig5,'-djpeg','-r1000',imageName);
