@@ -66,8 +66,8 @@ function resultSave(param,result,parallel,vehicleA)
     date = datetime('now','Format','y-MMM-d');
     time = datetime('now','Format','HH-mm-ss');
     fileLoc = sprintf('FYP/Image/%s/%f %f %s-%d/',...
-        date,max(VehicleE.acc((1/period:(totalTime-19)/period)))...
-        ,max(VehicleE.pos((1/period:(totalTime-19)/period))),time,parallel);
+        date,max(VehicleD.pos-VehicleE.pos)...
+        ,max(VehicleE.acc((1/period:(totalTime-19)/period))),time,parallel);
     
     mkdir(fileLoc)
     txtName = sprintf('%sparam.txt',fileLoc);

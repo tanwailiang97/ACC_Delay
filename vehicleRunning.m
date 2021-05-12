@@ -1,4 +1,4 @@
-function [reward] = vehicleRunning(param,vehicleA)
+function [reward] = vehicleRunning(param,vehicleA,accF,disF)
     %fprintf("Running Vehicle\n");
     %load Vehicle.mat VehicleA
     VehicleA = vehicleA;
@@ -8,8 +8,8 @@ function [reward] = vehicleRunning(param,vehicleA)
     minReward = globalVar(5);
     delL = ceil(globalVar(2)/period);
     delP = ceil(globalVar(3)/period);
-    accFactor = globalVar(6);
-    disFactor = globalVar(7);
+    accFactor = accF;
+    disFactor = disF;
     u = param(1);
     v = param(2);
     w = param(3);
