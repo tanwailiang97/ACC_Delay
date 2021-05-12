@@ -75,6 +75,8 @@ function resultSave(param,result,parallel,vehicleA)
     fprintf(fid,"\nResult\t: %.8f",result);
     fprintf(fid,"\nDelay\t: %f,%f",globalVar(2),globalVar(3));
     fprintf(fid,"\nPeriod\t: %f",globalVar(4));
+    fprintf(fid,"\nAcc Factor\t: %f",globalVar(6));
+    fprintf(fid,"\nDis Factor\t: %f",globalVar(7));
     fclose(fid);
     %writematrix(param,txtName);
     
@@ -94,8 +96,7 @@ function resultSave(param,result,parallel,vehicleA)
     hold off
     imageName = sprintf('%sfig1',fileLoc);
     print(fig1,'-djpeg','-r1000',imageName);
-    
-
+    close(fig1);
 
     fig2 = figure;
     hold on
@@ -111,7 +112,8 @@ function resultSave(param,result,parallel,vehicleA)
     hold off
     imageName = sprintf('%sfig2',fileLoc);
     print(fig2,'-djpeg','-r1000',imageName);
-
+    close(fig2);
+    
     fig3 = figure;
     hold on
     plot(timePlot,VehicleA.pos((1/period:(totalTime-19)/period)));
@@ -126,7 +128,7 @@ function resultSave(param,result,parallel,vehicleA)
     hold off
     imageName = sprintf('%sfig3',fileLoc);
     print(fig3,'-djpeg','-r1000',imageName);
-    
+    close(fig3);
 
 
     fig4 = figure;
@@ -146,7 +148,7 @@ function resultSave(param,result,parallel,vehicleA)
     hold off
     imageName = sprintf('%sfig4',fileLoc);
     print(fig4,'-djpeg','-r1000',imageName);
-    
+    close(fig4);
 
     fig5 = figure;
     hold on
@@ -165,6 +167,6 @@ function resultSave(param,result,parallel,vehicleA)
     hold off
     imageName = sprintf('%sfig5',fileLoc);
     print(fig5,'-djpeg','-r1000',imageName);
-    
-    close([fig1 fig2 fig3 fig4 fig5]);
+    close(fig5);
+    %close([fig1 fig2 fig3 fig4 fig5]);
 end

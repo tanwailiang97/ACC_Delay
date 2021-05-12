@@ -1,10 +1,12 @@
 function x = globalVar(num)
     TOTAL_TIME = 60;    %total Time for simulation
     PERIOD = 0.01;      %10ms global sampling 
-    SENS_DELAY_1 = 0.2; %200ms sensor delay for Leader
-    SENS_DELAY_2 = 0.2; %200ms sensor delay for Preceder
+    SENS_DELAY_1 = 0.3; %200ms sensor delay for Leader
+    SENS_DELAY_2 = 0.3; %200ms sensor delay for Preceder
     SENS_PERIOD = 0.06; %60ms update rate
-    PREV_RESULT = -15000000;
+    PREV_RESULT = -18000000*100;
+    ACC_FACTOR = 5;
+    DIS_FACTOR = 1;
     if num == 0
         x = TOTAL_TIME;
     elseif num == 1
@@ -17,5 +19,9 @@ function x = globalVar(num)
         x = SENS_PERIOD;
     elseif num == 5
         x = PREV_RESULT;
+    elseif num == 6
+        x = ACC_FACTOR;
+    elseif num == 7
+        x = DIS_FACTOR;
     end
 end
