@@ -46,11 +46,11 @@ function [reward] = vehicleRunning(param,vehicleA,accF,disF)
     vehFAcc = 0;
     vehGAcc = 0;
     
-    vehPDisC = 0;
-    vehPDisD = 0;
-    vehPDisE = 0;
-    vehPDisF = 0;
-    vehPDisG = 0;
+    vehPDisC = 10;
+    vehPDisD = 10;
+    vehPDisE = 10;
+    vehPDisF = 10;
+    vehPDisG = 10;
     
     maxAcc = 2;
     minAcc = -4.5;
@@ -130,14 +130,14 @@ function [reward] = vehicleRunning(param,vehicleA,accF,disF)
                 minAcc = VehicleG.acc(a-2);
             end
             
-            %if (VehicleE.acc(a-2)-VehicleE.acc(a-3))*((-1)^dampCount) > 0
-            %    dampCount = dampCount + 1;
-            %end
+            if (VehicleE.acc(a-2)-VehicleE.acc(a-3))*((-1)^dampCount) > 0
+                dampCount = dampCount + 1;
+            end
             
-            reward =  -((maxDisC + maxDisD + maxDisE + maxDisF + maxDisG)^ disFactor) * ...
+            reward =  -((maxDisC * maxDisD * maxDisE * maxDisF * maxDisG)^ disFactor) * ...
                         dampCount * ...
                         accFactor^(maxAcc / 2.5 - minAcc / 4.5);
-            if vehPDisC < 0 || vehPDisD < 0 || vehPDisE < 0
+            if vehPDisC <= 0 || vehPDisD <= 0 || vehPDisE <= 0 || vehPDisF <= 0 || vehPDisG <= 0
                 reward = minReward;
                 return
             end

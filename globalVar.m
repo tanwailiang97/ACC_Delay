@@ -4,8 +4,8 @@ function x = globalVar(num)
     SENS_DELAY_1 = 0.3; %200ms sensor delay for Leader
     SENS_DELAY_2 = 0.3; %200ms sensor delay for Preceder
     SENS_PERIOD = 0.06; %60ms update rate
-    PREV_RESULT = -18*10^9;
-    ACC_FACTOR = randi(20)+5;
+    PREV_RESULT = -18*10^16;
+    ACC_FACTOR = 3;%randi(20)+5;
     DIS_FACTOR = randi(4)+1;
     if num == 0
         x = TOTAL_TIME;

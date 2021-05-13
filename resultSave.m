@@ -7,6 +7,13 @@ function resultSave(param,result,parallel,vehicleA)
     delL = ceil(globalVar(2)/period);
     delP = ceil(globalVar(3)/period);
     
+    u = param(1);
+    v = param(2);
+    w = param(3);
+    x = param(4);
+    y = param(5);
+    z = param(6);
+    
     VehicleB = Vehicle(1055,3,0,3,-6,5,23);
     VehicleC = Vehicle(1055,3,0,3,-6,5,13);
     VehicleD = Vehicle(1055,3,0,3,-6,5,3);
