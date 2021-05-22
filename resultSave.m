@@ -8,6 +8,7 @@ function resultSave(param,result,parallel,vehicleA)
     delL = ceil(globalVar(2)/period);
     delP = ceil(globalVar(3)/period);
     delComp = globalVar(8);
+    extraDis = globalVar(9);
     
     u = param(1);
     v = param(2);
@@ -109,11 +110,11 @@ function resultSave(param,result,parallel,vehicleA)
                 
                 if (~delComp) || state
                     %disp(state);
-                    vehCAcc = VCCont.getAcc(vehLDisC,vehPDisC,vehLVelC,vehPVelC); 
-                    vehDAcc = VDCont.getAcc(vehLDisD,vehPDisD,vehLVelD,vehPVelD);
-                    vehEAcc = VECont.getAcc(vehLDisE,vehPDisE,vehLVelE,vehPVelE);
-                    vehFAcc = VFCont.getAcc(vehLDisF,vehPDisF,vehLVelF,vehPVelF);
-                    vehGAcc = VGCont.getAcc(vehLDisG,vehPDisG,vehLVelG,vehPVelG);
+                    vehCAcc = VCCont.getAcc(vehLDisC,vehPDisC-extraDis,vehLVelC,vehPVelC-extraDis); 
+                    vehDAcc = VDCont.getAcc(vehLDisD,vehPDisD-extraDis,vehLVelD,vehPVelD-extraDis);
+                    vehEAcc = VECont.getAcc(vehLDisE,vehPDisE-extraDis,vehLVelE,vehPVelE-extraDis);
+                    vehFAcc = VFCont.getAcc(vehLDisF,vehPDisF-extraDis,vehLVelF,vehPVelF-extraDis);
+                    vehGAcc = VGCont.getAcc(vehLDisG,vehPDisG-extraDis,vehLVelG,vehPVelG-extraDis);
                 end
                 
             end
@@ -137,6 +138,7 @@ function resultSave(param,result,parallel,vehicleA)
     fprintf(fid,"\nAcc Factor\t: %f",globalVar(6));
     fprintf(fid,"\nDis Factor\t: %f",globalVar(7));
     fprintf(fid,"\nDelay Compensated\t: %f",globalVar(8));
+    fprintf(fid,"\nExtra Dis\t: %f",globalVar(9));
     fclose(fid);
     %writematrix(param,txtName);
     
