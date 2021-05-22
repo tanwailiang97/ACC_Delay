@@ -30,7 +30,7 @@ classdef AccController < handle
             obj.kv = kv;
         end
         
-        function acc = getAcc(obj,vehLDis,vehPDis,vehLVel,vehPVel)
+        function acc = getAcc(obj,vehLDis,vehPDis,vehLVel,vehPVel,time)
             % Adaptive Cruise Control Controller  
             % Inputs:
             %   vehLDis :Distance from Leading Vehicle   (Scalar)
@@ -38,37 +38,36 @@ classdef AccController < handle
             % Outputs:
             %   acc     : desire acceleration            (Scalar)
             
-            %h = obj.vehicle.tao * 2;
-            obj.vehPDis(obj.sample) = vehPDis;
-            obj.vehPVel(obj.sample) = vehPVel;
+            %obj.vehPDis(obj.sample) = vehPDis;
+            %obj.vehPVel(obj.sample) = vehPVel;
             
-            obj.vehLDis(obj.sample) = vehLDis;
-            obj.vehLVel(obj.sample) = vehLVel;
+            %obj.vehLDis(obj.sample) = vehLDis;
+            %obj.vehLVel(obj.sample) = vehLVel;
             
             %if(obj.sample>2)
                 %lVel = gradient(obj.vehLDis(end-2:end));
                 %pVel = gradient(obj.vehPDis(end-2:end));
-                obj.vehLVel(obj.sample) = vehLVel;%lVel(end-1);
-                obj.vehPVel(obj.sample) = vehPVel;%pVel(end-1);
+                %obj.vehLVel(obj.sample) = vehLVel;%lVel(end-1);
+                %obj.vehPVel(obj.sample) = vehPVel;%pVel(end-1);
+                %{
                 acc = obj.kpP * obj.vehPDis(obj.sample) + ...
                       obj.kvP * obj.vehPVel(obj.sample)+...
                       obj.kpL * obj.vehLDis(obj.sample) + ...
                       obj.kvL * obj.vehLVel(obj.sample)+...
                       obj.kv  * obj.vehicle.vel(obj.sample) + ...
                       obj.k0;
-                %{
-                acc = obj.kp1 * (obj.vehLDis(obj.sample) - ...
-                        2 * obj.vehLVel(obj.sample) * h ) +...
-                        obj.kv1 * obj.vehLVel(obj.sample) + ...
-                        obj.kp2 * (obj.vehPDis(obj.sample) - ...
-                        obj.vehLVel(obj.sample) * h ) + ...
-                        obj.kv2 * obj.vehPVel(obj.sample);
                 %}
+                acc = obj.kpP * vehPDis + ...
+                      obj.kvP * vehPVel+...
+                      obj.kpL * vehLDis + ...
+                      obj.kvL * vehLVel+...
+                      obj.kv  * obj.vehicle.vel(time) + ...
+                      obj.k0;
             %else 
             %    acc = 0;
             %end
             
-            obj.sample = obj.sample + 1;
+            %obj.sample = obj.sample + 1;
             
         end
     end

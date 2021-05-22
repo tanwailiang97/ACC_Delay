@@ -17,7 +17,7 @@ classdef DelayComp < handle
             obj.k2 = k2;
             obj.vehicle = vehicle;
         end
-        function [pVelDiff,pPosDiff] = get(obj,VelDiff,PosDiff,time,state)
+        function [pVelDiff,pPosDiff] = get(obj,VelDiff,PosDiff,time,state,AccP)
             if state == 0
                 obj.prevVel = VelDiff + obj.vehicle.vel(time-obj.delInt);
                 obj.prevPos = PosDiff + obj.vehicle.pos(time-obj.delInt) + 5;

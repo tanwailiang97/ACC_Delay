@@ -56,7 +56,7 @@ function resultSave(param,result,parallel,vehicleA)
         if a > 1
             vehPDisB = VehicleA.pos(a-1) - VehicleB.pos(a-1) -5 ;
             vehPVelB = VehicleA.vel(a-1) - VehicleB.vel(a-1);
-            vehBAcc = VBCont.getAcc(0,vehPDisB,0,vehPVelB); 
+            vehBAcc = VBCont.getAcc(0,vehPDisB,0,vehPVelB,a); 
         end
         if (a > delP) && (a > delL)
             
@@ -93,28 +93,25 @@ function resultSave(param,result,parallel,vehicleA)
                 vehLVelG = VehicleE.vel(a-delL) - VehicleG.vel(a-delL);
                 
                 if delComp
-                    [vehPVelC,vehPDisC] = VCDeComp.get(vehPVelC,vehPDisC,a,state);
-                    [vehPVelD,vehPDisD] = VDDeComp.get(vehPVelD,vehPDisD,a,state);
-                    [vehPVelE,vehPDisE] = VEDeComp.get(vehPVelE,vehPDisE,a,state);
-                    [vehPVelF,vehPDisF] = VFDeComp.get(vehPVelF,vehPDisF,a,state);
-                    [vehPVelG,vehPDisG] = VGDeComp.get(vehPVelG,vehPDisG,a,state);
+                    [vehPVelC,vehPDisC] = VCDeComp.get(vehPVelC,vehPDisC,a,state,VehicleB.acc(a-delL));
+                    [vehPVelD,vehPDisD] = VDDeComp.get(vehPVelD,vehPDisD,a,state,VehicleC.acc(a-delL));
+                    [vehPVelE,vehPDisE] = VEDeComp.get(vehPVelE,vehPDisE,a,state,VehicleD.acc(a-delL));
+                    [vehPVelF,vehPDisF] = VFDeComp.get(vehPVelF,vehPDisF,a,state,VehicleE.acc(a-delL));
+                    [vehPVelG,vehPDisG] = VGDeComp.get(vehPVelG,vehPDisG,a,state,VehicleF.acc(a-delL));
                     
-                    [vehLVelC,vehLDisC] = VGDeComp.get(vehLVelC,vehLDisC,a,state);
-                    [vehLVelD,vehLDisD] = VGDeComp.get(vehLVelD,vehLDisD,a,state);
-                    [vehLVelE,vehLDisE] = VGDeComp.get(vehLVelE,vehLDisE,a,state);
-                    [vehLVelF,vehLDisF] = VGDeComp.get(vehLVelF,vehLDisF,a,state);
-                    [vehLVelG,vehLDisG] = VGDeComp.get(vehLVelG,vehLDisG,a,state);
-                    
-                    
+                    [vehLVelC,vehLDisC] = VGDeComp.get(vehLVelC,vehLDisC,a,state,VehicleA.acc(a-delL));
+                    [vehLVelD,vehLDisD] = VGDeComp.get(vehLVelD,vehLDisD,a,state,VehicleB.acc(a-delL));
+                    [vehLVelE,vehLDisE] = VGDeComp.get(vehLVelE,vehLDisE,a,state,VehicleC.acc(a-delL));
+                    [vehLVelF,vehLDisF] = VGDeComp.get(vehLVelF,vehLDisF,a,state,VehicleD.acc(a-delL));
+                    [vehLVelG,vehLDisG] = VGDeComp.get(vehLVelG,vehLDisG,a,state,VehicleE.acc(a-delL));
                 end
                 
                 if (~delComp) || state
-                    %disp(state);
-                    vehCAcc = VCCont.getAcc(vehLDisC,vehPDisC-extraDis,vehLVelC,vehPVelC-extraDis); 
-                    vehDAcc = VDCont.getAcc(vehLDisD,vehPDisD-extraDis,vehLVelD,vehPVelD-extraDis);
-                    vehEAcc = VECont.getAcc(vehLDisE,vehPDisE-extraDis,vehLVelE,vehPVelE-extraDis);
-                    vehFAcc = VFCont.getAcc(vehLDisF,vehPDisF-extraDis,vehLVelF,vehPVelF-extraDis);
-                    vehGAcc = VGCont.getAcc(vehLDisG,vehPDisG-extraDis,vehLVelG,vehPVelG-extraDis);
+                    vehCAcc = VCCont.getAcc(vehLDisC,vehPDisC-extraDis,vehLVelC,vehPVelC-extraDis,a); 
+                    vehDAcc = VDCont.getAcc(vehLDisD,vehPDisD-extraDis,vehLVelD,vehPVelD-extraDis,a);
+                    vehEAcc = VECont.getAcc(vehLDisE,vehPDisE-extraDis,vehLVelE,vehPVelE-extraDis,a);
+                    vehFAcc = VFCont.getAcc(vehLDisF,vehPDisF-extraDis,vehLVelF,vehPVelF-extraDis,a);
+                    vehGAcc = VGCont.getAcc(vehLDisG,vehPDisG-extraDis,vehLVelG,vehPVelG-extraDis,a);
                 end
                 
             end

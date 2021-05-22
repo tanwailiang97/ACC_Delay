@@ -79,7 +79,7 @@ function [reward] = vehicleRunning(param,vehicleA,accF,disF)
         if a > 1
             vehPDisB = VehicleA.pos(a-1) - VehicleB.pos(a-1) -5 ;
             vehPVelB = VehicleA.vel(a-1) - VehicleB.vel(a-1);
-            vehBAcc = VBCont.getAcc(0,vehPDisB,0,vehPVelB); 
+            vehBAcc = VBCont.getAcc(0,vehPDisB,0,vehPVelB,a); 
         end
         if (a > delP) && (a > delL)
             
@@ -121,27 +121,27 @@ function [reward] = vehicleRunning(param,vehicleA,accF,disF)
                 vehLVelG = VehicleE.vel(a-delL) - VehicleG.vel(a-delL);
                 
                 if delComp
-                    [vehPVelC,vehPDisC] = VCDeComp.get(vehPVelC,vehPDisC,a,state);
-                    [vehPVelD,vehPDisD] = VDDeComp.get(vehPVelD,vehPDisD,a,state);
-                    [vehPVelE,vehPDisE] = VEDeComp.get(vehPVelE,vehPDisE,a,state);
-                    [vehPVelF,vehPDisF] = VFDeComp.get(vehPVelF,vehPDisF,a,state);
-                    [vehPVelG,vehPDisG] = VGDeComp.get(vehPVelG,vehPDisG,a,state);
+                    [vehPVelC,vehPDisC] = VCDeComp.get(vehPVelC,vehPDisC,a,state,VehicleB.acc(a-delL));
+                    [vehPVelD,vehPDisD] = VDDeComp.get(vehPVelD,vehPDisD,a,state,VehicleC.acc(a-delL));
+                    [vehPVelE,vehPDisE] = VEDeComp.get(vehPVelE,vehPDisE,a,state,VehicleD.acc(a-delL));
+                    [vehPVelF,vehPDisF] = VFDeComp.get(vehPVelF,vehPDisF,a,state,VehicleE.acc(a-delL));
+                    [vehPVelG,vehPDisG] = VGDeComp.get(vehPVelG,vehPDisG,a,state,VehicleF.acc(a-delL));
                     
-                    [vehLVelC,vehLDisC] = VGDeComp.get(vehLVelC,vehLDisC,a,state);
-                    [vehLVelD,vehLDisD] = VGDeComp.get(vehLVelD,vehLDisD,a,state);
-                    [vehLVelE,vehLDisE] = VGDeComp.get(vehLVelE,vehLDisE,a,state);
-                    [vehLVelF,vehLDisF] = VGDeComp.get(vehLVelF,vehLDisF,a,state);
-                    [vehLVelG,vehLDisG] = VGDeComp.get(vehLVelG,vehLDisG,a,state);
+                    [vehLVelC,vehLDisC] = VGDeComp.get(vehLVelC,vehLDisC,a,state,VehicleA.acc(a-delL));
+                    [vehLVelD,vehLDisD] = VGDeComp.get(vehLVelD,vehLDisD,a,state,VehicleB.acc(a-delL));
+                    [vehLVelE,vehLDisE] = VGDeComp.get(vehLVelE,vehLDisE,a,state,VehicleC.acc(a-delL));
+                    [vehLVelF,vehLDisF] = VGDeComp.get(vehLVelF,vehLDisF,a,state,VehicleD.acc(a-delL));
+                    [vehLVelG,vehLDisG] = VGDeComp.get(vehLVelG,vehLDisG,a,state,VehicleE.acc(a-delL));
                     
                 end
                 
                 if (~delComp) || state
                     %disp(state);
-                    vehCAcc = VCCont.getAcc(vehLDisC,vehPDisC-extraDis,vehLVelC,vehPVelC-extraDis); 
-                    vehDAcc = VDCont.getAcc(vehLDisD,vehPDisD-extraDis,vehLVelD,vehPVelD-extraDis);
-                    vehEAcc = VECont.getAcc(vehLDisE,vehPDisE-extraDis,vehLVelE,vehPVelE-extraDis);
-                    vehFAcc = VFCont.getAcc(vehLDisF,vehPDisF-extraDis,vehLVelF,vehPVelF-extraDis);
-                    vehGAcc = VGCont.getAcc(vehLDisG,vehPDisG-extraDis,vehLVelG,vehPVelG-extraDis);
+                    vehCAcc = VCCont.getAcc(vehLDisC,vehPDisC-extraDis,vehLVelC,vehPVelC-extraDis,a); 
+                    vehDAcc = VDCont.getAcc(vehLDisD,vehPDisD-extraDis,vehLVelD,vehPVelD-extraDis,a);
+                    vehEAcc = VECont.getAcc(vehLDisE,vehPDisE-extraDis,vehLVelE,vehPVelE-extraDis,a);
+                    vehFAcc = VFCont.getAcc(vehLDisF,vehPDisF-extraDis,vehLVelF,vehPVelF-extraDis,a);
+                    vehGAcc = VGCont.getAcc(vehLDisG,vehPDisG-extraDis,vehLVelG,vehPVelG-extraDis,a);
                     %{
                     PvehLVelD(count) = vehLVelD - (VehicleB.vel(a) - VehicleD.vel(a));
                     PvehLPosD(count) = vehLDisD - (VehicleB.pos(a) - VehicleD.pos(a));
@@ -192,8 +192,8 @@ function [reward] = vehicleRunning(param,vehicleA,accF,disF)
     
     maxAcc = max(VehicleG.acc(1/period:end-2));
     minAcc = min(VehicleG.acc(1/period:end-2));
-    if maxAcc < 2
-        maxAcc = 2;  
+    if maxAcc < 2.5
+        maxAcc = 2.5;  
     end
     if minAcc > -4.5
         minAcc = -4.5;  
@@ -205,14 +205,24 @@ function [reward] = vehicleRunning(param,vehicleA,accF,disF)
     maxDisG = max(VehicleF.pos-VehicleG.pos);
     reward =  -((maxDisC * maxDisD * maxDisE * maxDisF * maxDisG)^ disFactor) * ...
                         dampCount * ...
-                        accFactor^(maxAcc / 2.5 - minAcc / 4.5);
+                        accFactor^( (maxAcc-1.5) - (minAcc + 3.5));
     %{
     close all
     figure
     hold on
-    plot(PvehLVelD)
-    plot(PvehLVelG)
+    plot(PvehLVelD(delL+1:end))
+    plot(PvehLVelG(delL+1:end))
     title('vel diff');
+    xlabel('time(s)');
+    ylabel('vel(ms-1)');
+    legend({'C','G'},'Location','southeast');
+    hold off
+
+    figure
+    hold on
+    plot(VehicleC.acc(delL+1:end))
+    plot(VehicleG.acc(delL+1:end))
+    title('acc');
     xlabel('time(s)');
     ylabel('vel(ms-1)');
     legend({'C','G'},'Location','southeast');
@@ -230,8 +240,8 @@ function [reward] = vehicleRunning(param,vehicleA,accF,disF)
 
     figure
     hold on
-    plot((VehicleB.vel(delL+1:a) - VehicleD.vel(delL+1:a))-(VehicleB.vel(1:a-delL) - VehicleD.vel(1:a-delL)))
-    plot((VehicleE.vel(delL+1:a) - VehicleG.vel(delL+1:a))-(VehicleE.vel(1:a-delL) - VehicleG.vel(1:a-delL)))
+    plot((VehicleB.vel(delL+1:end) - VehicleD.vel(delL+1:end))-(VehicleB.vel(1:end-delL) - VehicleD.vel(1:end-delL)))
+    plot((VehicleE.vel(delL+1:end) - VehicleG.vel(delL+1:end))-(VehicleE.vel(1:end-delL) - VehicleG.vel(1:end-delL)))
     title('vel diff wo');
     xlabel('time(s)');
     ylabel('pos(m)');
@@ -240,8 +250,8 @@ function [reward] = vehicleRunning(param,vehicleA,accF,disF)
     
     figure
     hold on
-    plot((VehicleB.pos(delL+1:a) - VehicleD.pos(delL+1:a))-(VehicleB.pos(1:a-delL) - VehicleD.pos(1:a-delL)))
-    plot((VehicleE.pos(delL+1:a) - VehicleG.pos(delL+1:a))-(VehicleE.pos(1:a-delL) - VehicleG.pos(1:a-delL)))
+    plot((VehicleB.pos(delL+1:end) - VehicleD.pos(delL+1:end))-(VehicleB.pos(1:end-delL) - VehicleD.pos(1:end-delL)))
+    plot((VehicleE.pos(delL+1:end) - VehicleG.pos(delL+1:end))-(VehicleE.pos(1:end-delL) - VehicleG.pos(1:end-delL)))
     title('pos diff wo');
     xlabel('time(s)');
     ylabel('pos(m)');

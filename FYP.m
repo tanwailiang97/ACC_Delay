@@ -11,7 +11,7 @@ tic
 
 fprintf("%s\nStarting FYP ...\n",datetime('now','Format','y-MMM-d HH-mm-ss'));
 
-maxParallel = 1;    
+maxParallel = 40;    
 
 parfor parallel = 1:maxParallel
     
@@ -20,7 +20,7 @@ parfor parallel = 1:maxParallel
     disFactor = globalVar(7);
     fprintf("%s\nStarting Parallel...%d\n",datetime('now','Format','y-MMM-d HH-mm-ss'),parallel);
     maxWorker = 16;
-    param = [0,0,0,0,0,0];
+    param = [0.650,-0.168,0.192,0.774,-0.032,0.992];
     prevResult = minReward;
     step = 0.001*2^13;
     prevWorker = maxWorker + 2;
@@ -32,7 +32,7 @@ parfor parallel = 1:maxParallel
     while(1)
         for worker = 3:maxWorker
             %fprintf("Running Worker %d\n",worker);
-            if worker > 13 || prevResult == minReward
+            if worker > 13 %|| prevResult == minReward
                 newParam(worker,:) = [0,(randi(1600,1,5)-800)*0.01];
             elseif worker == 13
                 newParam(worker,:) = param;
