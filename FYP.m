@@ -3,6 +3,8 @@
 %%C:\Users\Liang\Desktop\Programming
 %clear
 
+addpath(genpath('D:/WL/UTM/FYP'))
+
 load Vehicle.mat VehicleA
 
 tic
