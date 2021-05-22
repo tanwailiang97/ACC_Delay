@@ -6,13 +6,14 @@
 load Vehicle.mat VehicleA
 
 tic
-%totalTime = globalVar(0);% time in second
+%totalTime = globalVar(0);% time in
+%second\
 %period = globalVar(1);  %sampling period
 %sensPeriod = globalVar(4);
 
 fprintf("%s\nStarting FYP ...\n",datetime('now','Format','y-MMM-d HH-mm-ss'));
 
-maxParallel = 100;    
+maxParallel = 10;    
 
 parfor parallel = 1:maxParallel
     
@@ -21,7 +22,7 @@ parfor parallel = 1:maxParallel
     disFactor = globalVar(7);
     fprintf("%s\nStarting Parallel...%d\n",datetime('now','Format','y-MMM-d HH-mm-ss'),parallel);
     maxWorker = 16;
-    param = [0,(randi(1600,1,5)-800)*0.01];%[0 0 0 0 0 0];
+    param = [0.712,-0.032,0.000,1.502,0.000,1.224];
     prevResult = minReward;
     step = 0.001*2^13;
     prevWorker = maxWorker + 2;

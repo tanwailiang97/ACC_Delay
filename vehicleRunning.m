@@ -1,15 +1,19 @@
 function [reward] = vehicleRunning(param,vehicleA,accF,disF)
+    
+    %count = 1;
+    
     %fprintf("Running Vehicle\n");
-    %load Vehicle.mat VehicleA
     VehicleA = vehicleA;
     totalTime = globalVar(0);% time in second
     period = globalVar(1);  %sampling period
     sensPeriod = globalVar(4);
+    sensSamp = sensPeriod/period;
     minReward = globalVar(5);
     delL = ceil(globalVar(2)/period);
     delP = ceil(globalVar(3)/period);
     accFactor = accF;
     disFactor = disF;
+    delComp = globalVar(8);
     
     u = param(1);
     v = param(2);
@@ -32,6 +36,11 @@ function [reward] = vehicleRunning(param,vehicleA,accF,disF)
     VFCont = AccController(VehicleF,u,v,w,x,y,z);
     VGCont = AccController(VehicleG,u,v,w,x,y,z);
     
+    VCDeComp = DelayComp(VehicleC,1,1);
+    VDDeComp = DelayComp(VehicleD,1,1);
+    VEDeComp = DelayComp(VehicleE,1,1);
+    VFDeComp = DelayComp(VehicleF,1,1);
+    VGDeComp = DelayComp(VehicleG,1,1);
     
     maxDisC = 0;
     maxDisD = 0;
@@ -79,7 +88,13 @@ function [reward] = vehicleRunning(param,vehicleA,accF,disF)
             vehPDisG = VehicleF.pos(a-delP) - VehicleG.pos(a-delP) -5 ;
             
             %%Sensor New Data
-            if not(mod(a,sensPeriod/period))
+            if  ( not(mod(a,sensSamp)) || not(mod((a-(sensSamp/2)^(1-delComp)),sensSamp)) )
+                if not(mod(a,sensSamp))
+                    state = 0;
+                else
+                    state = 1;
+                    %fprintf("a = %d\n",a);
+                end
                 vehPVelC = VehicleB.vel(a-delP) - VehicleC.vel(a-delP);
                 vehPVelD = VehicleC.vel(a-delP) - VehicleD.vel(a-delP);
                 vehPVelE = VehicleD.vel(a-delP) - VehicleE.vel(a-delP);
@@ -97,12 +112,39 @@ function [reward] = vehicleRunning(param,vehicleA,accF,disF)
                 vehLVelE = VehicleC.vel(a-delL) - VehicleE.vel(a-delL);
                 vehLVelF = VehicleD.vel(a-delL) - VehicleF.vel(a-delL);
                 vehLVelG = VehicleE.vel(a-delL) - VehicleG.vel(a-delL);
-
-                vehCAcc = VCCont.getAcc(vehLDisC,vehPDisC,vehLVelC,vehPVelC); 
-                vehDAcc = VDCont.getAcc(vehLDisD,vehPDisD,vehLVelD,vehPVelD);
-                vehEAcc = VECont.getAcc(vehLDisE,vehPDisE,vehLVelE,vehPVelE);
-                vehFAcc = VFCont.getAcc(vehLDisF,vehPDisF,vehLVelF,vehPVelF);
-                vehGAcc = VGCont.getAcc(vehLDisG,vehPDisG,vehLVelG,vehPVelG);
+                
+                if delComp
+                    [vehPVelC,vehPDisC] = VCDeComp.get(vehPVelC,vehPDisC,a,state);
+                    [vehPVelD,vehPDisD] = VDDeComp.get(vehPVelD,vehPDisD,a,state);
+                    [vehPVelE,vehPDisE] = VEDeComp.get(vehPVelE,vehPDisE,a,state);
+                    [vehPVelF,vehPDisF] = VFDeComp.get(vehPVelF,vehPDisF,a,state);
+                    [vehPVelG,vehPDisG] = VGDeComp.get(vehPVelG,vehPDisG,a,state);
+                    
+                    [vehLVelC,vehLDisC] = VGDeComp.get(vehLVelC,vehLDisC,a,state);
+                    [vehLVelD,vehLDisD] = VGDeComp.get(vehLVelD,vehLDisD,a,state);
+                    [vehLVelE,vehLDisE] = VGDeComp.get(vehLVelE,vehLDisE,a,state);
+                    [vehLVelF,vehLDisF] = VGDeComp.get(vehLVelF,vehLDisF,a,state);
+                    [vehLVelG,vehLDisG] = VGDeComp.get(vehLVelG,vehLDisG,a,state);
+                    
+                    
+                end
+                
+                if (~delComp) || state
+                    %disp(state);
+                    vehCAcc = VCCont.getAcc(vehLDisC,vehPDisC,vehLVelC,vehPVelC); 
+                    vehDAcc = VDCont.getAcc(vehLDisD,vehPDisD,vehLVelD,vehPVelD);
+                    vehEAcc = VECont.getAcc(vehLDisE,vehPDisE,vehLVelE,vehPVelE);
+                    vehFAcc = VFCont.getAcc(vehLDisF,vehPDisF,vehLVelF,vehPVelF);
+                    vehGAcc = VGCont.getAcc(vehLDisG,vehPDisG,vehLVelG,vehPVelG);
+                    %{
+                    PvehLVelD(count) = vehLVelD - (VehicleB.vel(a) - VehicleD.vel(a));
+                    PvehLPosD(count) = vehLDisD - (VehicleB.pos(a) - VehicleD.pos(a));
+                    PvehLVelG(count) = vehLVelG - (VehicleE.vel(a) - VehicleG.vel(a));
+                    PvehLPosG(count) = vehLDisG - (VehicleE.pos(a) - VehicleG.pos(a));
+                    count = count + 1;
+                    %}
+                end
+                
             end
         end
         
@@ -143,5 +185,48 @@ function [reward] = vehicleRunning(param,vehicleA,accF,disF)
             end
         end
     end
+    %{
+    close all
+    figure
+    hold on
+    plot(PvehLVelD)
+    plot(PvehLVelG)
+    title('vel diff');
+    xlabel('time(s)');
+    ylabel('vel(ms-1)');
+    legend({'C','G'},'Location','southeast');
+    hold off
+    
+    figure
+    hold on
+    plot(PvehLPosD)
+    plot(PvehLPosG)
+    title('pos diff');
+    xlabel('time(s)');
+    ylabel('pos(m)');
+    legend({'C','G'},'Location','southeast');
+    hold off
 
+    figure
+    hold on
+    plot((VehicleB.vel(delL+1:a) - VehicleD.vel(delL+1:a))-(VehicleB.vel(1:a-delL) - VehicleD.vel(1:a-delL)))
+    plot((VehicleE.vel(delL+1:a) - VehicleG.vel(delL+1:a))-(VehicleE.vel(1:a-delL) - VehicleG.vel(1:a-delL)))
+    title('vel diff wo');
+    xlabel('time(s)');
+    ylabel('pos(m)');
+    legend({'C','G'},'Location','southeast');
+    hold off
+    
+    figure
+    hold on
+    plot((VehicleB.pos(delL+1:a) - VehicleD.pos(delL+1:a))-(VehicleB.pos(1:a-delL) - VehicleD.pos(1:a-delL)))
+    plot((VehicleE.pos(delL+1:a) - VehicleG.pos(delL+1:a))-(VehicleE.pos(1:a-delL) - VehicleG.pos(1:a-delL)))
+    title('pos diff wo');
+    xlabel('time(s)');
+    ylabel('pos(m)');
+    legend({'C','G'},'Location','southeast');
+    hold off
+    
+    fprintf("Done\n")
+    %}
 end

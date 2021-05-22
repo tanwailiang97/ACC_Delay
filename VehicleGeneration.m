@@ -21,6 +21,11 @@ for x = 1: (totalTime/globalVar(1)-1)
     else
         VehicleA.move(0);
     end
+    if(x < 8)
+        fprintf("%d - ",x)
+        fprintf("%.4f\t",VehicleA.pos);
+        fprintf("\n")
+    end
 end
 
 timePlot = 0:globalVar(1):(totalTime-20);
