@@ -117,13 +117,16 @@ function resultSave(param,result,parallel,vehicleA)
             end
         end
     end
+    
+    st = globalVar(11);
+    ed = globalVar(12);
 
-    timePlot = 0:period:(totalTime-20);
+    timePlot = 0:period:(totalTime-ed-st);
     date = datetime('now','Format','y-MMM-d');
     time = datetime('now','Format','HH-mm-ss');
     fileLoc = sprintf('FYP/Image/%s/%f %f %s-%d/',...
         date,max(VehicleF.pos-VehicleG.pos)...
-        ,max(VehicleG.acc((1/period:(totalTime-19)/period))),time,parallel);
+        ,max(VehicleG.acc((st/period:(totalTime-ed)/period))),time,parallel);
     
     mkdir(fileLoc)
     txtName = sprintf('%sparam.txt',fileLoc);
@@ -134,22 +137,25 @@ function resultSave(param,result,parallel,vehicleA)
     fprintf(fid,"\nPeriod\t: %f",globalVar(4));
     fprintf(fid,"\nAcc Factor\t: %f",globalVar(6));
     fprintf(fid,"\nDis Factor\t: %f",globalVar(7));
+    fprintf(fid,"\nDamp Factor\t: %f",globalVar(10));
     fprintf(fid,"\nDelay Compensated\t: %f",globalVar(8));
     fprintf(fid,"\nExtra Dis\t: %f",globalVar(9));
+
     fclose(fid);
     %writematrix(param,txtName);
+    
     
     %close all
 
     fig1 = figure;
     hold on
-    plot(timePlot,VehicleA.acc((1/period:(totalTime-19)/period)));
-    plot(timePlot,VehicleB.acc((1/period:(totalTime-19)/period)));
-    plot(timePlot,VehicleC.acc((1/period:(totalTime-19)/period)));
-    plot(timePlot,VehicleD.acc((1/period:(totalTime-19)/period)));
-    plot(timePlot,VehicleE.acc((1/period:(totalTime-19)/period)));
-    plot(timePlot,VehicleF.acc((1/period:(totalTime-19)/period)));
-    plot(timePlot,VehicleG.acc((1/period:(totalTime-19)/period)));
+    plot(timePlot,VehicleA.acc((st/period:(totalTime-ed)/period)));
+    plot(timePlot,VehicleB.acc((st/period:(totalTime-ed)/period)));
+    plot(timePlot,VehicleC.acc((st/period:(totalTime-ed)/period)));
+    plot(timePlot,VehicleD.acc((st/period:(totalTime-ed)/period)));
+    plot(timePlot,VehicleE.acc((st/period:(totalTime-ed)/period)));
+    plot(timePlot,VehicleF.acc((st/period:(totalTime-ed)/period)));
+    plot(timePlot,VehicleG.acc((st/period:(totalTime-ed)/period)));
     title('accleration');
     xlabel('time(s)');
     ylabel('acceleration(ms-2)');
@@ -161,13 +167,13 @@ function resultSave(param,result,parallel,vehicleA)
 
     fig2 = figure;
     hold on
-    plot(timePlot,VehicleA.vel((1/period:(totalTime-19)/period)));
-    plot(timePlot,VehicleB.vel((1/period:(totalTime-19)/period)));
-    plot(timePlot,VehicleC.vel((1/period:(totalTime-19)/period)));
-    plot(timePlot,VehicleD.vel((1/period:(totalTime-19)/period)));
-    plot(timePlot,VehicleE.vel((1/period:(totalTime-19)/period)));
-    plot(timePlot,VehicleF.vel((1/period:(totalTime-19)/period)));
-    plot(timePlot,VehicleG.vel((1/period:(totalTime-19)/period)));
+    plot(timePlot,VehicleA.vel((st/period:(totalTime-ed)/period)));
+    plot(timePlot,VehicleB.vel((st/period:(totalTime-ed)/period)));
+    plot(timePlot,VehicleC.vel((st/period:(totalTime-ed)/period)));
+    plot(timePlot,VehicleD.vel((st/period:(totalTime-ed)/period)));
+    plot(timePlot,VehicleE.vel((st/period:(totalTime-ed)/period)));
+    plot(timePlot,VehicleF.vel((st/period:(totalTime-ed)/period)));
+    plot(timePlot,VehicleG.vel((st/period:(totalTime-ed)/period)));
     title('velocity');
     xlabel('time(s)');
     ylabel('velocity(ms-1)');
@@ -179,13 +185,13 @@ function resultSave(param,result,parallel,vehicleA)
     
     fig3 = figure;
     hold on
-    plot(timePlot,VehicleA.pos((1/period:(totalTime-19)/period)));
-    plot(timePlot,VehicleB.pos((1/period:(totalTime-19)/period)));
-    plot(timePlot,VehicleC.pos((1/period:(totalTime-19)/period)));
-    plot(timePlot,VehicleD.pos((1/period:(totalTime-19)/period)));
-    plot(timePlot,VehicleE.pos((1/period:(totalTime-19)/period)));
-    plot(timePlot,VehicleF.pos((1/period:(totalTime-19)/period)));
-    plot(timePlot,VehicleG.pos((1/period:(totalTime-19)/period)));
+    plot(timePlot,VehicleA.pos((st/period:(totalTime-ed)/period)));
+    plot(timePlot,VehicleB.pos((st/period:(totalTime-ed)/period)));
+    plot(timePlot,VehicleC.pos((st/period:(totalTime-ed)/period)));
+    plot(timePlot,VehicleD.pos((st/period:(totalTime-ed)/period)));
+    plot(timePlot,VehicleE.pos((st/period:(totalTime-ed)/period)));
+    plot(timePlot,VehicleF.pos((st/period:(totalTime-ed)/period)));
+    plot(timePlot,VehicleG.pos((st/period:(totalTime-ed)/period)));
     title('position');
     xlabel('time(s)');
     ylabel('position(m)');
@@ -198,18 +204,18 @@ function resultSave(param,result,parallel,vehicleA)
 
     fig4 = figure;
     hold on
-    %plot(timePlot,VehicleA.pos((1/period:(totalTime-19)/period))...
-    %            -VehicleB.pos((1/period:(totalTime-19)/period)));
-    plot(timePlot,VehicleB.pos((1/period:(totalTime-19)/period))...
-                -VehicleC.pos((1/period:(totalTime-19)/period)));
-    plot(timePlot,VehicleC.pos((1/period:(totalTime-19)/period))...
-                -VehicleD.pos((1/period:(totalTime-19)/period)));
-    plot(timePlot,VehicleD.pos((1/period:(totalTime-19)/period))...
-                -VehicleE.pos((1/period:(totalTime-19)/period)));
-    plot(timePlot,VehicleE.pos((1/period:(totalTime-19)/period))...
-                -VehicleF.pos((1/period:(totalTime-19)/period)));
-    plot(timePlot,VehicleF.pos((1/period:(totalTime-19)/period))...
-                -VehicleG.pos((1/period:(totalTime-19)/period)));
+    %plot(timePlot,VehicleA.pos((st/period:(totalTime-ed)/period))...
+    %            -VehicleB.pos((st/period:(totalTime-ed)/period)));
+    plot(timePlot,VehicleB.pos((st/period:(totalTime-ed)/period))...
+                -VehicleC.pos((st/period:(totalTime-ed)/period)));
+    plot(timePlot,VehicleC.pos((st/period:(totalTime-ed)/period))...
+                -VehicleD.pos((st/period:(totalTime-ed)/period)));
+    plot(timePlot,VehicleD.pos((st/period:(totalTime-ed)/period))...
+                -VehicleE.pos((st/period:(totalTime-ed)/period)));
+    plot(timePlot,VehicleE.pos((st/period:(totalTime-ed)/period))...
+                -VehicleF.pos((st/period:(totalTime-ed)/period)));
+    plot(timePlot,VehicleF.pos((st/period:(totalTime-ed)/period))...
+                -VehicleG.pos((st/period:(totalTime-ed)/period)));
     title('position different');
     xlabel('time(s)');
     ylabel('position(m)');
@@ -221,18 +227,18 @@ function resultSave(param,result,parallel,vehicleA)
 
     fig5 = figure;
     hold on
-    %plot(timePlot,VehicleA.acc((1/period:(totalTime-19)/period))...
-    %            -VehicleB.acc((1/period:(totalTime-19)/period)));
-    plot(timePlot,VehicleB.acc((1/period:(totalTime-19)/period))...
-                -VehicleC.acc((1/period:(totalTime-19)/period)));
-    plot(timePlot,VehicleC.acc((1/period:(totalTime-19)/period))...
-                -VehicleD.acc((1/period:(totalTime-19)/period)));
-    plot(timePlot,VehicleD.acc((1/period:(totalTime-19)/period))...
-                -VehicleE.acc((1/period:(totalTime-19)/period)));
-    plot(timePlot,VehicleE.acc((1/period:(totalTime-19)/period))...
-                -VehicleF.acc((1/period:(totalTime-19)/period)));
-    plot(timePlot,VehicleF.acc((1/period:(totalTime-19)/period))...
-                -VehicleG.acc((1/period:(totalTime-19)/period)));
+    %plot(timePlot,VehicleA.acc((st/period:(totalTime-ed)/period))...
+    %            -VehicleB.acc((st/period:(totalTime-ed)/period)));
+    plot(timePlot,VehicleB.acc((st/period:(totalTime-ed)/period))...
+                -VehicleC.acc((st/period:(totalTime-ed)/period)));
+    plot(timePlot,VehicleC.acc((st/period:(totalTime-ed)/period))...
+                -VehicleD.acc((st/period:(totalTime-ed)/period)));
+    plot(timePlot,VehicleD.acc((st/period:(totalTime-ed)/period))...
+                -VehicleE.acc((st/period:(totalTime-ed)/period)));
+    plot(timePlot,VehicleE.acc((st/period:(totalTime-ed)/period))...
+                -VehicleF.acc((st/period:(totalTime-ed)/period)));
+    plot(timePlot,VehicleF.acc((st/period:(totalTime-ed)/period))...
+                -VehicleG.acc((st/period:(totalTime-ed)/period)));
     title('accleration different');
     xlabel('time(s)');
     ylabel('acceleration(ms-2)');

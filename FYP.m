@@ -20,7 +20,7 @@ parfor parallel = 1:maxParallel
     disFactor = globalVar(7);
     fprintf("%s\nStarting Parallel...%d\n",datetime('now','Format','y-MMM-d HH-mm-ss'),parallel);
     maxWorker = 16;
-    param = [0.650,-0.168,0.192,0.774,-0.032,0.992];
+    param = [0.000,-3.566,3.130,4.194,1.830,0.158];
     prevResult = minReward;
     step = 0.001*2^13;
     prevWorker = maxWorker + 2;
@@ -52,7 +52,7 @@ parfor parallel = 1:maxParallel
                 param = newParam(bestWorker,:);
                 fprintf("%d - ",parallel);
                 fprintf("%.3f,",param);
-                fprintf(" > %.2f\n",maxResult);
+                fprintf(" > %g\n",maxResult);
                 flag = 1;
             elseif ((idivide(bestWorker-1,int8(2)) == idivide(prevWorker-1,int8(2)) ... 
                     && bestWorker < 13) || (bestWorkerOld == bestWorker && bestWorker < maxWorker + 2)) ...

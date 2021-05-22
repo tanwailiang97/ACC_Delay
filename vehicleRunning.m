@@ -13,8 +13,10 @@ function [reward] = vehicleRunning(param,vehicleA,accF,disF)
     delP = ceil(globalVar(3)/period);
     accFactor = accF;
     disFactor = disF;
+    dampFactor = globalVar(10);
     delComp = globalVar(8);
     extraDis = globalVar(9);
+    st = globalVar(11);
     
     u = param(1);
     v = param(2);
@@ -171,7 +173,7 @@ function [reward] = vehicleRunning(param,vehicleA,accF,disF)
         end
         %}
         %%Condition check
-        if a > 1/period
+        if a > st/period
 
             %if VehicleG.acc(a-2) > maxAcc 
             %    maxAcc = VehicleG.acc(a-2);
@@ -179,7 +181,7 @@ function [reward] = vehicleRunning(param,vehicleA,accF,disF)
             %    minAcc = VehicleG.acc(a-2);
             %end
             
-            if (VehicleE.acc(a-2)-VehicleE.acc(a-3))*((-1)^dampCount) > 0
+            if (VehicleG.acc(a-2)-VehicleG.acc(a-3))*((-1)^dampCount) > 0
                 dampCount = dampCount + 1;
             end
             
@@ -190,22 +192,24 @@ function [reward] = vehicleRunning(param,vehicleA,accF,disF)
         end
     end
     
-    maxAcc = max(VehicleG.acc(1/period:end-2));
-    minAcc = min(VehicleG.acc(1/period:end-2));
+    maxAcc = max(VehicleG.acc(st/period:end-2));
+    minAcc = min(VehicleG.acc(st/period:end-2));
+    %{
     if maxAcc < 2.5
         maxAcc = 2.5;  
     end
     if minAcc > -4.5
         minAcc = -4.5;  
     end
+    %}
     maxDisC = max(VehicleB.pos-VehicleC.pos);
     maxDisD = max(VehicleC.pos-VehicleD.pos);
     maxDisE = max(VehicleD.pos-VehicleE.pos);
     maxDisF = max(VehicleE.pos-VehicleF.pos);
     maxDisG = max(VehicleF.pos-VehicleG.pos);
     reward =  -((maxDisC * maxDisD * maxDisE * maxDisF * maxDisG)^ disFactor) * ...
-                        dampCount * ...
-                        accFactor^( (maxAcc-1.5) - (minAcc + 3.5));
+                        dampCount^dampFactor * ...
+                        accFactor^( 1 + abs(maxAcc-2.5) + abs(minAcc + 4.5));
     %{
     close all
     figure
