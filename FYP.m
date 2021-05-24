@@ -1,5 +1,5 @@
 %%D:\Mega\Programming\
-%%D:\WL\UTM\FYP
+%%D:\WL\UTM\
 %%C:\Users\Liang\Desktop\Programming
 %clear
 
@@ -32,7 +32,7 @@ parfor parallel = 1:maxParallel
     while(1)
         for worker = 3:maxWorker
             %fprintf("Running Worker %d\n",worker);
-            if worker > 13 %|| prevResult == minReward
+            if worker > 13 || prevResult == minReward
                 newParam(worker,:) = [0,(randi(1600,1,5)-800)*0.01];
             elseif worker == 13
                 newParam(worker,:) = param;

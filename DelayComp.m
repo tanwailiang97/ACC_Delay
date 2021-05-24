@@ -23,10 +23,20 @@ classdef DelayComp < handle
                 obj.prevPos = PosDiff + obj.vehicle.pos(time-obj.delInt) + 5;
                 pPosDiff = 0;
                 pVelDiff = 0;
-            else
+            elseif state == 1
                 Pos = PosDiff + obj.vehicle.pos(time-obj.delInt) + 5;
                 Vel = VelDiff + obj.vehicle.vel(time-obj.delInt);
                 Acc = gradient([obj.prevVel Vel]);
+                pPos = Pos + Vel * obj.del + 0.5 * Acc(1) * (obj.del ^ 2);
+                pPosDiff = pPos - obj.vehicle.pos(time);
+                pVelDiff = Vel + Acc(1) * obj.del...
+                            -obj.vehicle.vel(time);
+                        
+            elseif state == 2
+                Pos = PosDiff + obj.vehicle.pos(time-obj.delInt) + 5;
+                Vel = VelDiff + obj.vehicle.vel(time-obj.delInt);
+                Acc = gradient([obj.prevVel Vel]);
+                obj.prevVel = Vel;
                 pPos = Pos + Vel * obj.del + 0.5 * Acc(1) * (obj.del ^ 2);
                 pPosDiff = pPos - obj.vehicle.pos(time);
                 pVelDiff = Vel + Acc(1) * obj.del...

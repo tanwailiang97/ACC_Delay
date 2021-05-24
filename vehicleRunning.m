@@ -97,13 +97,16 @@ function [reward] = vehicleRunning(param,vehicleA,accF,disF)
                 return
             end
             %%Sensor New Data
-            if ( not(mod(a,sensSamp)) || not(mod((a-(sensSamp/2)^(1-delComp)),sensSamp)) )
+            if  not(mod(a,sensSamp)) %|| not(mod((a-(sensSamp/2)^(1-delComp)),sensSamp)) )
+                state = 2;
+                %{
                 if not(mod(a,sensSamp))
                     state = 0;
                 else
                     state = 1;
                     %fprintf("a = %d\n",a);
                 end
+                %}
                 vehPVelC = VehicleB.vel(a-delP) - VehicleC.vel(a-delP);
                 vehPVelD = VehicleC.vel(a-delP) - VehicleD.vel(a-delP);
                 vehPVelE = VehicleD.vel(a-delP) - VehicleE.vel(a-delP);
