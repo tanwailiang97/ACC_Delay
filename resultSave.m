@@ -9,6 +9,7 @@ function resultSave(param,result,parallel,vehicleA)
     delP = ceil(globalVar(3)/period);
     delComp = globalVar(8);
     extraDis = globalVar(9);
+    sens2 = globalVar(13);
     
     u = param(1);
     v = param(2);
@@ -65,15 +66,19 @@ function resultSave(param,result,parallel,vehicleA)
             vehPDisE = VehicleD.pos(a-delP) - VehicleE.pos(a-delP) -5 ;
             vehPDisF = VehicleE.pos(a-delP) - VehicleF.pos(a-delP) -5 ;
             vehPDisG = VehicleF.pos(a-delP) - VehicleG.pos(a-delP) -5 ;
-            
             %%Sensor New Data
-            if  ( not(mod(a,sensSamp)) || not(mod((a-(sensSamp/2)^(1-delComp)),sensSamp)) )
-                if not(mod(a,sensSamp))
-                    state = 0;
+            if  (not(mod(a,sensSamp))) || (sens2 && not(mod((a-(sensSamp/2)^(1-delComp)),sensSamp)))
+                if sens2
+                    if not(mod(a,sensSamp))
+                        state = 0;
+                    else
+                        state = 1;
+                    end
                 else
-                    state = 1;
-                    %fprintf("a = %d\n",a);
+                    state = 2;
                 end
+                
+                %}
                 vehPVelC = VehicleB.vel(a-delP) - VehicleC.vel(a-delP);
                 vehPVelD = VehicleC.vel(a-delP) - VehicleD.vel(a-delP);
                 vehPVelE = VehicleD.vel(a-delP) - VehicleE.vel(a-delP);
@@ -104,6 +109,7 @@ function resultSave(param,result,parallel,vehicleA)
                     [vehLVelE,vehLDisE] = VGDeComp.get(vehLVelE,vehLDisE,a,state,VehicleC.acc(a-delL));
                     [vehLVelF,vehLDisF] = VGDeComp.get(vehLVelF,vehLDisF,a,state,VehicleD.acc(a-delL));
                     [vehLVelG,vehLDisG] = VGDeComp.get(vehLVelG,vehLDisG,a,state,VehicleE.acc(a-delL));
+                    
                 end
                 
                 if (~delComp) || state
@@ -140,6 +146,7 @@ function resultSave(param,result,parallel,vehicleA)
     fprintf(fid,"\nDamp Factor\t: %f",globalVar(10));
     fprintf(fid,"\nDelay Compensated\t: %f",globalVar(8));
     fprintf(fid,"\nExtra Dis\t: %f",globalVar(9));
+    fprintf(fid,"\nSensor 2\t: %f",globalVar(13));
 
     fclose(fid);
     %writematrix(param,txtName);
