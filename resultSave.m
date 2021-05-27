@@ -11,6 +11,7 @@ function resultSave(param,result,parallel,vehicleA,vehicleB)
     delComp = globalVar(8);
     extraDis = globalVar(9);
     sens2 = globalVar(13);
+    tao = globalVar(14);
     
     u = param(1);
     v = param(2);
@@ -20,11 +21,11 @@ function resultSave(param,result,parallel,vehicleA,vehicleB)
     z = param(6);
     
     %VehicleB = Vehicle(1055,3,0,3,-6,5,23);
-    VehicleC = Vehicle(1055,3,0,2,-2,0,20);
-    VehicleD = Vehicle(1055,3,0,2,-2,0,15);
-    VehicleE = Vehicle(1055,3,0,2,-2,0,10);
-    VehicleF = Vehicle(1055,3,0,2,-2,0,5);
-    VehicleG = Vehicle(1055,3,0,2,-2,0,0);
+    VehicleC = Vehicle(1055,3,tao,2,-2,0,20);
+    VehicleD = Vehicle(1055,3,tao,2,-2,0,15);
+    VehicleE = Vehicle(1055,3,tao,2,-2,0,10);
+    VehicleF = Vehicle(1055,3,tao,2,-2,0,5);
+    VehicleG = Vehicle(1055,3,tao,2,-2,0,0);
     
     %VBCont = AccController(VehicleB,7.92,-0.352,2.96,8.72,0,0);
     VCCont = AccController(VehicleC,u,v,w,x,y,z);

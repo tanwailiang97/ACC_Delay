@@ -12,6 +12,7 @@ function [reward] = vehicleRunning(param,vehicleA,vehicleB,accF,disF)
     delP = ceil(globalVar(3)/period);
     accFactor = accF;
     disFactor = disF;
+    tao = globalVar(14);
     dampFactor = globalVar(10);
     delComp = globalVar(8);
     extraDis = globalVar(9);
@@ -25,11 +26,11 @@ function [reward] = vehicleRunning(param,vehicleA,vehicleB,accF,disF)
     y = param(5);
     z = param(6);
 
-    VehicleC = Vehicle(1055,3,0,2,-2,0,20);
-    VehicleD = Vehicle(1055,3,0,2,-2,0,15);
-    VehicleE = Vehicle(1055,3,0,2,-2,0,10);
-    VehicleF = Vehicle(1055,3,0,2,-2,0,5);
-    VehicleG = Vehicle(1055,3,0,2,-2,0,0);
+    VehicleC = Vehicle(1055,3,tao,2,-2,0,20);
+    VehicleD = Vehicle(1055,3,tao,2,-2,0,15);
+    VehicleE = Vehicle(1055,3,tao,2,-2,0,10);
+    VehicleF = Vehicle(1055,3,tao,2,-2,0,5);
+    VehicleG = Vehicle(1055,3,tao,2,-2,0,0);
 
     VCCont = AccController(VehicleC,u,v,w,x,y,z);
     VDCont = AccController(VehicleD,u,v,w,x,y,z);
@@ -70,7 +71,7 @@ function [reward] = vehicleRunning(param,vehicleA,vehicleB,accF,disF)
             %%Crash
             if vehPDisC <= 0 || vehPDisD <= 0 || vehPDisE <= 0 || vehPDisF <= 0 || vehPDisG <= 0
                 reward = minReward;
-                fprintf("%d-Crashed\n",a);
+                %fprintf("%d-Crashed\n",a);
                 return
             end
             %%Sensor New Data

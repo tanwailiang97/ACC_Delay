@@ -13,6 +13,7 @@ function x = globalVar(num)
     START = 5;
     END = 20 - START;
     SENS2 = 0;
+    TAO = 0.5;
     if num == 0
         x = TOTAL_TIME;
     elseif num == 1
@@ -41,5 +42,7 @@ function x = globalVar(num)
         x = END;
     elseif num == 13
         x = SENS2;
+    elseif num == 14
+        x = TAO;
     end
 end

@@ -31,7 +31,7 @@ for parallel = 1:maxParallel
     
     while(1)
         parfor worker = 3:maxWorker
-            fprintf("Running Worker %d\n",worker);
+            %fprintf("Running Worker %d\n",worker);
             if worker > 13 || prevResult == minReward
                 newParam(worker,:) = [0,(randi(400,1,5)-200)*0.01];
             elseif worker == 13
