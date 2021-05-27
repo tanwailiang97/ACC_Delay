@@ -57,7 +57,7 @@ function resultSave(param,result,parallel,vehicleA)
         if a > 1
             vehPDisB = VehicleA.pos(a-1) - VehicleB.pos(a-1) -5 ;
             vehPVelB = VehicleA.vel(a-1) - VehicleB.vel(a-1);
-            vehBAcc = VBCont.getAcc(0,vehPDisB,0,vehPVelB,a); 
+            vehBAcc  = VBCont.getAcc(0,vehPDisB,0,vehPVelB,a); 
         end
         if (a > delP) && (a > delL)
             
@@ -130,8 +130,8 @@ function resultSave(param,result,parallel,vehicleA)
     timePlot = 0:period:(totalTime-ed-st);
     date = datetime('now','Format','y-MMM-d');
     time = datetime('now','Format','HH-mm-ss');
-    fileLoc = sprintf('FYP/Image/%s/%f %f %s-%d/',...
-        date,max(VehicleF.pos-VehicleG.pos)...
+    fileLoc = sprintf('FYP/Image/%s/%d-%f %f %f %s-%d/',...
+        date,globalVar(8),globalVar(2),max(VehicleF.pos-VehicleG.pos)...
         ,max(VehicleG.acc((st/period:(totalTime-ed)/period))),time,parallel);
     
     mkdir(fileLoc)
@@ -147,7 +147,8 @@ function resultSave(param,result,parallel,vehicleA)
     fprintf(fid,"\nDelay Compensated\t: %f",globalVar(8));
     fprintf(fid,"\nExtra Dis\t: %f",globalVar(9));
     fprintf(fid,"\nSensor 2\t: %f",globalVar(13));
-
+    fprintf(fid,"\nMax Distance\t: %f",max(VehicleA.pos-VehicleG.pos));
+    
     fclose(fid);
     %writematrix(param,txtName);
     
@@ -189,7 +190,7 @@ function resultSave(param,result,parallel,vehicleA)
     imageName = sprintf('%sfig2',fileLoc);
     print(fig2,'-djpeg','-r1000',imageName);
     close(fig2);
-    
+    %{
     fig3 = figure;
     hold on
     plot(timePlot,VehicleA.pos((st/period:(totalTime-ed)/period)));
@@ -208,20 +209,20 @@ function resultSave(param,result,parallel,vehicleA)
     print(fig3,'-djpeg','-r1000',imageName);
     close(fig3);
 
-
+%}
     fig4 = figure;
     hold on
     %plot(timePlot,VehicleA.pos((st/period:(totalTime-ed)/period))...
     %            -VehicleB.pos((st/period:(totalTime-ed)/period)));
-    plot(timePlot,VehicleB.pos((st/period:(totalTime-ed)/period))...
+    plot(timePlot,VehicleA.pos((st/period:(totalTime-ed)/period))...
                 -VehicleC.pos((st/period:(totalTime-ed)/period)));
-    plot(timePlot,VehicleC.pos((st/period:(totalTime-ed)/period))...
+    plot(timePlot,VehicleA.pos((st/period:(totalTime-ed)/period))...
                 -VehicleD.pos((st/period:(totalTime-ed)/period)));
-    plot(timePlot,VehicleD.pos((st/period:(totalTime-ed)/period))...
+    plot(timePlot,VehicleA.pos((st/period:(totalTime-ed)/period))...
                 -VehicleE.pos((st/period:(totalTime-ed)/period)));
-    plot(timePlot,VehicleE.pos((st/period:(totalTime-ed)/period))...
+    plot(timePlot,VehicleA.pos((st/period:(totalTime-ed)/period))...
                 -VehicleF.pos((st/period:(totalTime-ed)/period)));
-    plot(timePlot,VehicleF.pos((st/period:(totalTime-ed)/period))...
+    plot(timePlot,VehicleA.pos((st/period:(totalTime-ed)/period))...
                 -VehicleG.pos((st/period:(totalTime-ed)/period)));
     title('position different');
     xlabel('time(s)');
@@ -231,7 +232,7 @@ function resultSave(param,result,parallel,vehicleA)
     imageName = sprintf('%sfig4',fileLoc);
     print(fig4,'-djpeg','-r1000',imageName);
     close(fig4);
-
+%{
     fig5 = figure;
     hold on
     %plot(timePlot,VehicleA.acc((st/period:(totalTime-ed)/period))...
@@ -254,5 +255,8 @@ function resultSave(param,result,parallel,vehicleA)
     imageName = sprintf('%sfig5',fileLoc);
     print(fig5,'-djpeg','-r1000',imageName);
     close(fig5);
+    
+%}
+    
     %close([fig1 fig2 fig3 fig4 fig5]);
 end

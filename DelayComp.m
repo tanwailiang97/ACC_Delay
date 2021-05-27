@@ -1,7 +1,7 @@
 classdef DelayComp < handle
     properties
-        prevVel;
-        prevPos;
+        prevVel = 0;
+        prevPos = 0;
         delInt;
         k1;
         k2;
@@ -11,7 +11,7 @@ classdef DelayComp < handle
     
     methods
         function obj = DelayComp(vehicle,k1,k2)
-            obj.delInt = globalVar(2)/globalVar(1);
+            obj.delInt = round(globalVar(2)/globalVar(1));
             obj.del = globalVar(2);
             obj.k1 = k1;
             obj.k2 = k2;
