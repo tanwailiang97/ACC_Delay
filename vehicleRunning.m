@@ -1,8 +1,8 @@
-function [reward] = vehicleRunning(param,vehicleA,accF,disF)
-    
-    
+function [reward] = vehicleRunning(param,vehicleA,vehicleB,accF,disF)
+
     %fprintf("Running Vehicle\n");
     VehicleA = vehicleA;
+    VehicleB = vehicleB;
     totalTime = globalVar(0);% time in second
     period = globalVar(1);  %sampling period
     sensPeriod = globalVar(4);
@@ -24,15 +24,13 @@ function [reward] = vehicleRunning(param,vehicleA,accF,disF)
     x = param(4);
     y = param(5);
     z = param(6);
-    
-    VehicleB = Vehicle(1055,3,0,3,-6,5,23);
-    VehicleC = Vehicle(1055,3,0,3,-6,5,13);
-    VehicleD = Vehicle(1055,3,0,3,-6,5,3);
-    VehicleE = Vehicle(1055,3,0,3,-6,5,-7);
-    VehicleF = Vehicle(1055,3,0,3,-6,5,-17);
-    VehicleG = Vehicle(1055,3,0,3,-6,5,-27);
-    
-    VBCont = AccController(VehicleB,7.92,-0.352,2.96,8.72,0,0);
+
+    VehicleC = Vehicle(1055,3,0,2,-2,0,20);
+    VehicleD = Vehicle(1055,3,0,2,-2,0,15);
+    VehicleE = Vehicle(1055,3,0,2,-2,0,10);
+    VehicleF = Vehicle(1055,3,0,2,-2,0,5);
+    VehicleG = Vehicle(1055,3,0,2,-2,0,0);
+
     VCCont = AccController(VehicleC,u,v,w,x,y,z);
     VDCont = AccController(VehicleD,u,v,w,x,y,z);
     VECont = AccController(VehicleE,u,v,w,x,y,z);
@@ -45,7 +43,6 @@ function [reward] = vehicleRunning(param,vehicleA,accF,disF)
     VFDeComp = DelayComp(VehicleF,1,1);
     VGDeComp = DelayComp(VehicleG,1,1);
 
-    vehBAcc = 0;
     vehCAcc = 0;
     vehDAcc = 0;
     vehEAcc = 0;
@@ -57,28 +54,23 @@ function [reward] = vehicleRunning(param,vehicleA,accF,disF)
     
     for a = 1:(totalTime/period-1)
 
-        VehicleB.move(vehBAcc);
         VehicleC.move(vehCAcc);
         VehicleD.move(vehDAcc);
         VehicleE.move(vehEAcc);
         VehicleF.move(vehFAcc);
         VehicleG.move(vehGAcc);
-        if a > 1
-            vehPDisB = VehicleA.pos(a-1) - VehicleB.pos(a-1) -5 ;
-            vehPVelB = VehicleA.vel(a-1) - VehicleB.vel(a-1);
-            vehBAcc = VBCont.getAcc(0,vehPDisB,0,vehPVelB,a); 
-        end
+        
         if (a > delP) && (a > delL)
             
-            vehPDisC = VehicleB.pos(a-delP) - VehicleC.pos(a-delP) -5 ;
-            vehPDisD = VehicleC.pos(a-delP) - VehicleD.pos(a-delP) -5 ;
-            vehPDisE = VehicleD.pos(a-delP) - VehicleE.pos(a-delP) -5 ;
-            vehPDisF = VehicleE.pos(a-delP) - VehicleF.pos(a-delP) -5 ;
-            vehPDisG = VehicleF.pos(a-delP) - VehicleG.pos(a-delP) -5 ;
+            vehPDisC = VehicleB.pos(a-delP) - VehicleC.pos(a-delP) -3 ;
+            vehPDisD = VehicleC.pos(a-delP) - VehicleD.pos(a-delP) -3 ;
+            vehPDisE = VehicleD.pos(a-delP) - VehicleE.pos(a-delP) -3 ;
+            vehPDisF = VehicleE.pos(a-delP) - VehicleF.pos(a-delP) -3 ;
+            vehPDisG = VehicleF.pos(a-delP) - VehicleG.pos(a-delP) -3 ;
             %%Crash
             if vehPDisC <= 0 || vehPDisD <= 0 || vehPDisE <= 0 || vehPDisF <= 0 || vehPDisG <= 0
                 reward = minReward;
-                %fprintf("Crashed\n");
+                fprintf("%d-Crashed\n",a);
                 return
             end
             %%Sensor New Data

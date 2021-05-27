@@ -1,13 +1,13 @@
 function x = globalVar(num)
     TOTAL_TIME = 160;    %total Time for simulation
     PERIOD = 0.01;      %10ms global sampling 
-    SENS_DELAY_1 = 0.3; %200ms sensor delay for Leader
-    SENS_DELAY_2 = 0.3; %200ms sensor delay for Preceder
+    SENS_DELAY_1 = 0.0; %200ms sensor delay for Leader
+    SENS_DELAY_2 = 0.0; %200ms sensor delay for Preceder
     SENS_PERIOD = 0.06; %60ms update rate
-    PREV_RESULT = -18*10^50;
+    PREV_RESULT = -18*10^80;
     ACC_FACTOR = 15;%randi(20)+5;
     DIS_FACTOR = 5;%randi(4)+1;
-    DELAY_COMPENSATED  = 1;
+    DELAY_COMPENSATED  = 0;
     EXTRA_DIS = 0*DELAY_COMPENSATED;
     DAMP_FACTOR = 2;
     START = 5;

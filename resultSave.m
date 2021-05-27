@@ -1,6 +1,7 @@
-function resultSave(param,result,parallel,vehicleA)
+function resultSave(param,result,parallel,vehicleA,vehicleB)
     %load Vehicle.mat VehicleA
     VehicleA = vehicleA;
+    VehicleB = vehicleB;
     totalTime = globalVar(0);% time in second
     period = globalVar(1);  %sampling period
     sensPeriod = globalVar(4);
@@ -18,14 +19,14 @@ function resultSave(param,result,parallel,vehicleA)
     y = param(5);
     z = param(6);
     
-    VehicleB = Vehicle(1055,3,0,3,-6,5,23);
-    VehicleC = Vehicle(1055,3,0,3,-6,5,13);
-    VehicleD = Vehicle(1055,3,0,3,-6,5,3);
-    VehicleE = Vehicle(1055,3,0,3,-6,5,-7);
-    VehicleF = Vehicle(1055,3,0,3,-6,5,-17);
-    VehicleG = Vehicle(1055,3,0,3,-6,5,-27);
+    %VehicleB = Vehicle(1055,3,0,3,-6,5,23);
+    VehicleC = Vehicle(1055,3,0,2,-2,0,20);
+    VehicleD = Vehicle(1055,3,0,2,-2,0,15);
+    VehicleE = Vehicle(1055,3,0,2,-2,0,10);
+    VehicleF = Vehicle(1055,3,0,2,-2,0,5);
+    VehicleG = Vehicle(1055,3,0,2,-2,0,0);
     
-    VBCont = AccController(VehicleB,7.92,-0.352,2.96,8.72,0,0);
+    %VBCont = AccController(VehicleB,7.92,-0.352,2.96,8.72,0,0);
     VCCont = AccController(VehicleC,u,v,w,x,y,z);
     VDCont = AccController(VehicleD,u,v,w,x,y,z);
     VECont = AccController(VehicleE,u,v,w,x,y,z);
@@ -38,7 +39,7 @@ function resultSave(param,result,parallel,vehicleA)
     VFDeComp = DelayComp(VehicleF,1,1);
     VGDeComp = DelayComp(VehicleG,1,1);
 
-    vehBAcc = 0;
+    %vehBAcc = 0;
     vehCAcc = 0;
     vehDAcc = 0;
     vehEAcc = 0;
@@ -47,18 +48,18 @@ function resultSave(param,result,parallel,vehicleA)
     
     for a = 1:(totalTime/period-1)
 
-        VehicleB.move(vehBAcc);
+        %VehicleB.move(vehBAcc);
         VehicleC.move(vehCAcc);
         VehicleD.move(vehDAcc);
         VehicleE.move(vehEAcc);
         VehicleF.move(vehFAcc);
         VehicleG.move(vehGAcc);
         
-        if a > 1
-            vehPDisB = VehicleA.pos(a-1) - VehicleB.pos(a-1) -5 ;
-            vehPVelB = VehicleA.vel(a-1) - VehicleB.vel(a-1);
-            vehBAcc  = VBCont.getAcc(0,vehPDisB,0,vehPVelB,a); 
-        end
+        %if a > 1
+            %vehPDisB = VehicleA.pos(a-1) - VehicleB.pos(a-1) -5 ;
+            %vehPVelB = VehicleA.vel(a-1) - VehicleB.vel(a-1);
+            %vehBAcc  = VBCont.getAcc(0,vehPDisB,0,vehPVelB,a); 
+        %end
         if (a > delP) && (a > delL)
             
             vehPDisC = VehicleB.pos(a-delP) - VehicleC.pos(a-delP) -5 ;
@@ -157,8 +158,8 @@ function resultSave(param,result,parallel,vehicleA)
 
     fig1 = figure;
     hold on
-    plot(timePlot,VehicleA.acc((st/period:(totalTime-ed)/period)));
-    plot(timePlot,VehicleB.acc((st/period:(totalTime-ed)/period)));
+    %plot(timePlot,VehicleA.acc((st/period:(totalTime-ed)/period)));
+    %plot(timePlot,VehicleB.acc((st/period:(totalTime-ed)/period)));
     plot(timePlot,VehicleC.acc((st/period:(totalTime-ed)/period)));
     plot(timePlot,VehicleD.acc((st/period:(totalTime-ed)/period)));
     plot(timePlot,VehicleE.acc((st/period:(totalTime-ed)/period)));
@@ -167,7 +168,7 @@ function resultSave(param,result,parallel,vehicleA)
     title('accleration');
     xlabel('time(s)');
     ylabel('acceleration(ms-2)');
-    legend({'A','B','C','D','E','F','G'},'Location','southeast');
+    legend({'A','B','C','D','E'},'Location','southeast');
     hold off
     imageName = sprintf('%sfig1',fileLoc);
     print(fig1,'-djpeg','-r1000',imageName);
@@ -175,8 +176,8 @@ function resultSave(param,result,parallel,vehicleA)
 
     fig2 = figure;
     hold on
-    plot(timePlot,VehicleA.vel((st/period:(totalTime-ed)/period)));
-    plot(timePlot,VehicleB.vel((st/period:(totalTime-ed)/period)));
+    %plot(timePlot,VehicleA.vel((st/period:(totalTime-ed)/period)));
+    %plot(timePlot,VehicleB.vel((st/period:(totalTime-ed)/period)));
     plot(timePlot,VehicleC.vel((st/period:(totalTime-ed)/period)));
     plot(timePlot,VehicleD.vel((st/period:(totalTime-ed)/period)));
     plot(timePlot,VehicleE.vel((st/period:(totalTime-ed)/period)));
@@ -185,7 +186,7 @@ function resultSave(param,result,parallel,vehicleA)
     title('velocity');
     xlabel('time(s)');
     ylabel('velocity(ms-1)');
-    legend({'A','B','C','D','E','F','G'},'Location','southeast');
+    legend({'A','B','C','D','E'},'Location','southeast');
     hold off
     imageName = sprintf('%sfig2',fileLoc);
     print(fig2,'-djpeg','-r1000',imageName);
@@ -214,15 +215,15 @@ function resultSave(param,result,parallel,vehicleA)
     hold on
     %plot(timePlot,VehicleA.pos((st/period:(totalTime-ed)/period))...
     %            -VehicleB.pos((st/period:(totalTime-ed)/period)));
-    plot(timePlot,VehicleA.pos((st/period:(totalTime-ed)/period))...
+    plot(timePlot,VehicleB.pos((st/period:(totalTime-ed)/period))...
                 -VehicleC.pos((st/period:(totalTime-ed)/period)));
-    plot(timePlot,VehicleA.pos((st/period:(totalTime-ed)/period))...
+    plot(timePlot,VehicleB.pos((st/period:(totalTime-ed)/period))...
                 -VehicleD.pos((st/period:(totalTime-ed)/period)));
-    plot(timePlot,VehicleA.pos((st/period:(totalTime-ed)/period))...
+    plot(timePlot,VehicleB.pos((st/period:(totalTime-ed)/period))...
                 -VehicleE.pos((st/period:(totalTime-ed)/period)));
-    plot(timePlot,VehicleA.pos((st/period:(totalTime-ed)/period))...
+    plot(timePlot,VehicleB.pos((st/period:(totalTime-ed)/period))...
                 -VehicleF.pos((st/period:(totalTime-ed)/period)));
-    plot(timePlot,VehicleA.pos((st/period:(totalTime-ed)/period))...
+    plot(timePlot,VehicleB.pos((st/period:(totalTime-ed)/period))...
                 -VehicleG.pos((st/period:(totalTime-ed)/period)));
     title('position different');
     xlabel('time(s)');
