@@ -20,9 +20,9 @@ for parallel = 1:maxParallel
     disFactor = globalVar(7);
     fprintf("%s\nStarting Parallel...%d\n",datetime('now','Format','y-MMM-d HH-mm-ss'),parallel);
     maxWorker = 14;
-    param = [0,0,0,0,0,0];
+    param = [0.000,-1.410,13.636,6.980,1.812,0.476];
     prevResult = minReward;
-    step = 0.001*2^11;
+    step = 0.001*2^7;
     prevWorker = maxWorker + 2;
     bestWorker = maxWorker + 2;
     flag = 0;
@@ -31,9 +31,9 @@ for parallel = 1:maxParallel
     
     while(1)
         parfor worker = 3:maxWorker
-            %fprintf("Running Worker %d\n",worker);
-            if worker > 13 || prevResult == minReward
-                newParam(worker,:) = [0,(randi(400,1,5)-200)*0.01];
+            fprintf("Running Worker %d\n",worker);
+            if worker > 13 %|| prevResult == minReward
+                newParam(worker,:) = [0,(randi(1600,1,5)-800)*0.01];
             elseif worker == 13
                 newParam(worker,:) = param;
             else
@@ -54,10 +54,9 @@ for parallel = 1:maxParallel
                 fprintf("%.3f,",param);
                 fprintf(" > %g\n",maxResult);
                 flag = 1;
-            elseif ((idivide(bestWorker-1,int8(2)) == idivide(prevWorker-1,int8(2)) ... 
-                    && bestWorker < 13) || (bestWorkerOld == bestWorker && bestWorker < maxWorker + 2)) ...
-                    && flag == 1
-
+            %elseif ((idivide(bestWorker-1,int8(2)) == idivide(prevWorker-1,int8(2)) ... 
+            %        && bestWorker < 13) || (bestWorkerOld == bestWorker && bestWorker < maxWorker + 2)) ...
+            elseif flag == 1 && (bestWorker == 13  || maxResult == prevResult)
                 step = step/2;
                 if step < 0.001
                     %fprintf("low step = %f\n",step);
@@ -65,7 +64,7 @@ for parallel = 1:maxParallel
                 end
                 fprintf("%d - step = %f\n",parallel,step);
             else 
-                %fprintf("Worker %d,%d\n",bestWorker,prevWorker);
+                fprintf("Worker %d,%d \tResult:%g,%g\n",bestWorker,prevWorker,maxResult,prevResult);
             end
         else
             %fprintf("Equal\n");

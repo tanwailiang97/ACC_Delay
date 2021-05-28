@@ -53,13 +53,13 @@ function [reward] = vehicleRunning(param,vehicleA,vehicleB,accF,disF)
     dampCount = 1;
     
     
-    for a = 1:(totalTime/period-1)
+    for a = 1:(totalTime/period)
 
-        VehicleC.move(vehCAcc);
-        VehicleD.move(vehDAcc);
-        VehicleE.move(vehEAcc);
-        VehicleF.move(vehFAcc);
-        VehicleG.move(vehGAcc);
+        VehicleC.move(vehCAcc,a);
+        VehicleD.move(vehDAcc,a);
+        VehicleE.move(vehEAcc,a);
+        VehicleF.move(vehFAcc,a);
+        VehicleG.move(vehGAcc,a);
         
         if (a > delP) && (a > delL)
             

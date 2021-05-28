@@ -47,14 +47,14 @@ function resultSave(param,result,parallel,vehicleA,vehicleB)
     vehFAcc = 0;
     vehGAcc = 0;
     
-    for a = 1:(totalTime/period-1)
+    for a = 1:(totalTime/period)
 
         %VehicleB.move(vehBAcc);
-        VehicleC.move(vehCAcc);
-        VehicleD.move(vehDAcc);
-        VehicleE.move(vehEAcc);
-        VehicleF.move(vehFAcc);
-        VehicleG.move(vehGAcc);
+        VehicleC.move(vehCAcc,a);
+        VehicleD.move(vehDAcc,a);
+        VehicleE.move(vehEAcc,a);
+        VehicleF.move(vehFAcc,a);
+        VehicleG.move(vehGAcc,a);
         
         %if a > 1
             %vehPDisB = VehicleA.pos(a-1) - VehicleB.pos(a-1) -5 ;
@@ -142,6 +142,7 @@ function resultSave(param,result,parallel,vehicleA,vehicleB)
     fprintf(fid,"%.3f,",param);
     fprintf(fid,"\nResult\t: %.8f",result);
     fprintf(fid,"\nDelay\t: %f,%f",globalVar(2),globalVar(3));
+    fprintf(fid,"\nTao\t: %f",globalVar(14));
     fprintf(fid,"\nPeriod\t: %f",globalVar(4));
     fprintf(fid,"\nAcc Factor\t: %f",globalVar(6));
     fprintf(fid,"\nDis Factor\t: %f",globalVar(7));

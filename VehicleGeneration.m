@@ -41,9 +41,9 @@ VehicleA.jerk = gradient(VehicleA.acc)/VehicleA.period;
 VehicleA.vel  = cumtrapz(VehicleA.acc)*period;
 VehicleA.pos  = cumtrapz(VehicleA.vel)*period + VehicleA.offPos;
 
-VehicleB.pos = VehicleA.pos - VehicleA.vel*0.1 - 5;
-VehicleB.vel = gradient(VehicleB.pos)/VehicleB.period;
-VehicleB.acc = del2(VehicleB.pos,VehicleB.period);
+VehicleB.vel = VehicleA.vel;
+VehicleB.pos = cumtrapz(VehicleB.vel)*period + VehicleB.offPos;
+VehicleB.acc = gradient(VehicleB.vel)/VehicleB.period;
 
 %{
 timePlot = globalVar(1):globalVar(1):(totalTime);

@@ -11,7 +11,7 @@ classdef Vehicle < handle
         period = globalVar(1);  %Global Sampling Period
         m;                      %Vehicle Mass
         a;                      %Vehicle Front Area
-        sample = 0;             %Current n
+        %sample = 0;             %Current n
         offVel = 5;
         offPos;
     end
@@ -27,26 +27,30 @@ classdef Vehicle < handle
             obj.offPos = offPos;
         end
         
-        function [pos,vel,acc] = move(obj,signal)
-            obj.sample = obj.sample + 1;
+        function [pos,vel,acc] = move(obj,signal,time)
+            %obj.sample = obj.sample + 1;
+            
+            %{
             if(signal > obj.maxAcc)
                 signal = obj.maxAcc;
             elseif (signal < obj.minAcc)
                 signal = obj.minAcc;
             end
-            obj.sig(obj.sample) = signal;
-            
-            
-            if obj.sample > obj.tao/obj.period
-                obj.acc(obj.sample) = obj.sig(obj.tao/obj.period);
+            %}
+            obj.sig(time) = signal;
+            delay = ceil(obj.tao/obj.period);
+            if time > delay
+                obj.acc(time) = obj.sig(time - delay);
             else
-                obj.acc(obj.sample) = 0;
+                obj.acc(time) = 0;
             end
+            
+                %obj.acc(obj.sample) = signal;
                 obj.vel = cumtrapz(obj.acc)*obj.period + obj.offVel;
                 obj.pos = cumtrapz(obj.vel)*obj.period + obj.offPos ;
-                acc = obj.acc(obj.sample);
-                vel = obj.vel(obj.sample);
-                pos = obj.pos(obj.sample);
+                acc = obj.acc(time);
+                vel = obj.vel(time);
+                pos = obj.pos(time);
            
 
         end
