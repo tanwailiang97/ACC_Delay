@@ -12,6 +12,7 @@ function resultSave(param,result,parallel,vehicleA,vehicleB)
     extraDis = globalVar(9);
     sens2 = globalVar(13);
     tao = globalVar(14);
+    dampCount = 1;
     
     u = param(1);
     v = param(2);
@@ -121,7 +122,13 @@ function resultSave(param,result,parallel,vehicleA,vehicleB)
                     vehFAcc = VFCont.getAcc(vehLDisF,vehPDisF-extraDis,vehLVelF,vehPVelF-extraDis,a);
                     vehGAcc = VGCont.getAcc(vehLDisG,vehPDisG-extraDis,vehLVelG,vehPVelG-extraDis,a);
                 end
-                
+                %%Condition check
+            
+            end
+            if a > 2
+                if (VehicleG.acc(end)-VehicleG.acc(end-1))*((-1)^dampCount) > 0
+                    dampCount = dampCount + 1;
+                end
             end
         end
     end
@@ -132,15 +139,15 @@ function resultSave(param,result,parallel,vehicleA,vehicleB)
     timePlot = 0:period:(totalTime-ed-st);
     date = datetime('now','Format','y-MMM-d');
     time = datetime('now','Format','HH-mm-ss');
-    fileLoc = sprintf('FYP/Image/%s/%d-%f %f %f %s-%d/',...
-        date,globalVar(8),globalVar(2),max(VehicleF.pos-VehicleG.pos)...
-        ,max(VehicleG.acc((st/period:(totalTime-ed)/period))),time,parallel);
+    fileLoc = sprintf('FYP/Image/%s/%d-%f %d %f %s-%d/',...
+        date,globalVar(8),globalVar(2),dampCount...
+        ,max(VehicleG.acc),time,parallel);
     
     mkdir(fileLoc)
     txtName = sprintf('%sparam.txt',fileLoc);
     fid = fopen(txtName,'w');
     fprintf(fid,"%.3f,",param);
-    fprintf(fid,"\nResult\t: %.8f",result);
+    fprintf(fid,"\nResult\t: %.20g",result);
     fprintf(fid,"\nDelay\t: %f,%f",globalVar(2),globalVar(3));
     fprintf(fid,"\nTao\t: %f",globalVar(14));
     fprintf(fid,"\nPeriod\t: %f",globalVar(4));
@@ -150,6 +157,7 @@ function resultSave(param,result,parallel,vehicleA,vehicleB)
     fprintf(fid,"\nDelay Compensated\t: %f",globalVar(8));
     fprintf(fid,"\nExtra Dis\t: %f",globalVar(9));
     fprintf(fid,"\nSensor 2\t: %f",globalVar(13));
+    fprintf(fid,"\nDamp Count\t: %d",dampCount);
     fprintf(fid,"\nMax Distance\t: %f",max(VehicleA.pos-VehicleG.pos));
     
     fclose(fid);

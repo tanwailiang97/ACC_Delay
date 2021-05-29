@@ -16,7 +16,7 @@ function [reward] = vehicleRunning(param,vehicleA,vehicleB,accF,disF)
     dampFactor = globalVar(10);
     delComp = globalVar(8);
     extraDis = globalVar(9);
-    st = globalVar(11);
+    %st = globalVar(11);
     sens2 = globalVar(13);
     
     u = param(1);
@@ -132,15 +132,16 @@ function [reward] = vehicleRunning(param,vehicleA,vehicleB,accF,disF)
         end
         
         %%Condition check
-        if a > st/period
-            if (VehicleG.acc(a-2)-VehicleG.acc(a-3))*((-1)^dampCount) > 0
+        if a > 2
+            if (VehicleG.acc(end)-VehicleG.acc(end-1))*((-1)^dampCount) > 0
                 dampCount = dampCount + 1;
             end
         end
+        
     end
     
-    maxAcc = max(VehicleG.acc(st/period:end-2));
-    minAcc = min(VehicleG.acc(st/period:end-2));
+    maxAcc = max(VehicleG.acc);
+    minAcc = min(VehicleG.acc);
 
     maxDisC = max(VehicleB.pos-VehicleC.pos);
     maxDisD = max(VehicleC.pos-VehicleD.pos);

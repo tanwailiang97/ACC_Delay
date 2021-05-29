@@ -11,18 +11,18 @@ addpath(genpath('D:/WL/UTM/FYP'))
 
 fprintf("%s\nStarting FYP ...\n",datetime('now','Format','y-MMM-d HH-mm-ss'));
 
-maxParallel = 1;    
+maxParallel = 20;    
 
-for parallel = 1:maxParallel
+parfor parallel = 1:maxParallel
     
     minReward = globalVar(5);
     accFactor = globalVar(6);
     disFactor = globalVar(7);
     fprintf("%s\nStarting Parallel...%d\n",datetime('now','Format','y-MMM-d HH-mm-ss'),parallel);
     maxWorker = 14;
-    param = [0.000,-1.410,13.636,6.980,1.812,0.476];
+    param = [0.000,-2.488,14.872,2.348,0.092,1.694];
     prevResult = minReward;
-    step = 0.001*2^7;
+    step = 0.001*2^12;
     prevWorker = maxWorker + 2;
     bestWorker = maxWorker + 2;
     flag = 0;
@@ -30,9 +30,9 @@ for parallel = 1:maxParallel
     result = ones(maxWorker,1)*minReward;
     
     while(1)
-        parfor worker = 3:maxWorker
-            fprintf("Running Worker %d\n",worker);
-            if worker > 13 %|| prevResult == minReward
+        for worker = 3:maxWorker
+            %fprintf("Running Worker %d\n",worker);
+            if worker > 13 || prevResult == minReward
                 newParam(worker,:) = [0,(randi(1600,1,5)-800)*0.01];
             elseif worker == 13
                 newParam(worker,:) = param;
