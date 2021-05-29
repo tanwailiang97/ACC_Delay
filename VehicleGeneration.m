@@ -6,7 +6,7 @@ period = globalVar(1);  %sampling period
 VehicleA = Vehicle(1055,2.306,0.01,1.962,-1.962,0,30);
 VehicleB = Vehicle(1055,2.306,0.01,1.962,-1.962,0,25);
 
-
+%{
 for x = 1: (totalTime/period)
     k = -1/4.5; 
     y = x * period;
@@ -21,65 +21,44 @@ for x = 1: (totalTime/period)
     end
 end
 
-%{
-for x = 1: (totalTime/period)
-    k = -1/6.86;
-    y = x * period;
-    if(y <= 40)
-        VehicleA.vel(x) = 10*(1-exp(k*y));
-    elseif (y <= 80) 
-        VehicleA.vel(x) = VehicleA.vel(40/period) + 10*(1-exp(k*y)*exp(-40*k));
-    elseif (y <= 120) 
-        VehicleA.vel(x) = VehicleA.vel(80/period) - 5*(1-exp(k*y)*exp(-80*k));
-    elseif (y <= 160) 
-        VehicleA.vel(x) = VehicleA.vel(120/period) + 10*(1-exp(k*y)*exp(-120*k));
-    end
-end
-%}
 
 VehicleA.jerk = gradient(VehicleA.acc)/VehicleA.period;
 VehicleA.vel  = cumtrapz(VehicleA.acc)*period;
 VehicleA.pos  = cumtrapz(VehicleA.vel)*period + VehicleA.offPos;
-
-VehicleB.vel = VehicleA.vel;
-VehicleB.pos = cumtrapz(VehicleB.vel)*period + VehicleB.offPos;
-VehicleB.acc = gradient(VehicleB.vel)/VehicleB.period;
-
-%{
-timePlot = globalVar(1):globalVar(1):(totalTime);
-
-close all
-
-figure;
-hold on
-plot(timePlot,VehicleA.jerk);
-title("Jerk");
-%plot(timePlot,VehicleB.acc);
-%legend({'A','B'},'Location','southeast');
-hold off
-
-figure;
-hold on
-plot(timePlot,VehicleA.acc);
-title("Acc");
-%plot(timePlot,VehicleB.acc);
-%legend({'A','B'},'Location','southeast');
-hold off
-
-figure;
-hold on
-plot(timePlot,VehicleA.vel);
-%plot(timePlot,VehicleB.vel);
-title("Vel");
-%legend({'A','B'},'Location','southeast');
-hold off
-
-figure;
-hold on
-plot(timePlot,VehicleA.pos-VehicleB.pos);
-title("Pos");
-%plot(timePlot,VehicleB.pos);
-%legend({'A','B'},'Location','southeast');
-hold off
 %}
-%}
+
+for x = 1: (totalTime/period)
+    k = -1/6.86;    %38s
+    y = x * period;
+    if y <= 2
+        VehicleA.vel(x) = velInc*0.1272*((y)/2)^2;
+    elseif y <= 40
+        VehicleA.vel(x) = VehicleA.vel(2/period) +  velInc*0.8728*(1-exp(k*(y-2)));
+    elseif y <= 42
+        VehicleA.vel(x) = VehicleA.vel(40/period) + velInc*0.1272*((y-40)/2)^2;
+    elseif y <= 80
+        VehicleA.vel(x) = VehicleA.vel(42/period) + velInc*0.8728*(1-exp(k*(y-42)));
+    elseif y <= 82
+        VehicleA.vel(x) = VehicleA.vel(80/period) + velDec*0.1272*((y-80)/2)^2;
+    elseif y <= 120 
+        VehicleA.vel(x) = VehicleA.vel(82/period) + velDec*0.8728*(1-exp(k*y)*exp(-82*k));
+    elseif y <= 122
+        VehicleA.vel(x) = VehicleA.vel(120/period) + velInc*0.1272*((y-120)/2)^2;
+    elseif y <= 160 
+        VehicleA.vel(x) = VehicleA.vel(122/period) + velInc*0.8728*(1-exp(k*y)*exp(-122*k));
+    end
+end
+
+VehicleA.jerk = del2(VehicleA.vel,period);
+VehicleA.acc  = gradient(VehicleA.vel)/period;
+VehicleA.pos  = cumtrapz(VehicleA.vel)*period + VehicleA.offPos;
+
+
+
+VehicleB.pos = VehicleA.pos - VehicleB.offPos - VehicleA.vel * 0.4;
+VehicleB.vel = gradient(VehicleB.pos)/period;
+VehicleB.acc = gradient(VehicleB.vel)/period;
+
+%VehicleB.vel = VehicleA.vel;
+%VehicleB.pos = cumtrapz(VehicleB.vel)*period + VehicleB.offPos;
+%VehicleB.acc = gradient(VehicleB.vel)/VehicleB.period;
