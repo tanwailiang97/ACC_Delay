@@ -3,9 +3,10 @@ addpath(genpath('D:/WL/UTM/FYP'))
 [A,B] = VehicleGeneration(10,-5);
 close all
 hold on
-%plot(A.pos)
+plot(A.vel)
 plot(A.pos-B.pos)
-%plot(A.jerk)
+plot(A.acc)
+plot(A.jerk)
 hold off
 
 

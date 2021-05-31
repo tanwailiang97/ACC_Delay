@@ -7,8 +7,6 @@ addpath(genpath('D:/WL/UTM/FYP'))
 
 [VehicleA,VehicleB] = VehicleGeneration(10,-5);
 
-
-
 fprintf("%s\nStarting FYP ...\n",datetime('now','Format','y-MMM-d HH-mm-ss'));
 
 maxParallel = 20;    

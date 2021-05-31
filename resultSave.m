@@ -14,6 +14,8 @@ function resultSave(param,result,parallel,vehicleA,vehicleB)
     tao = globalVar(14);
     dampCount = 1;
     
+    st = globalVar(11);
+    
     u = param(1);
     v = param(2);
     w = param(3);
@@ -64,11 +66,11 @@ function resultSave(param,result,parallel,vehicleA,vehicleB)
         %end
         if (a > delP) && (a > delL)
             
-            vehPDisC = VehicleB.pos(a-delP) - VehicleC.pos(a-delP) -5 ;
-            vehPDisD = VehicleC.pos(a-delP) - VehicleD.pos(a-delP) -5 ;
-            vehPDisE = VehicleD.pos(a-delP) - VehicleE.pos(a-delP) -5 ;
-            vehPDisF = VehicleE.pos(a-delP) - VehicleF.pos(a-delP) -5 ;
-            vehPDisG = VehicleF.pos(a-delP) - VehicleG.pos(a-delP) -5 ;
+            vehPDisC = VehicleB.pos(a-delP) - VehicleC.pos(a-delP) -3 ;
+            vehPDisD = VehicleC.pos(a-delP) - VehicleD.pos(a-delP) -3 ;
+            vehPDisE = VehicleD.pos(a-delP) - VehicleE.pos(a-delP) -3 ;
+            vehPDisF = VehicleE.pos(a-delP) - VehicleF.pos(a-delP) -3 ;
+            vehPDisG = VehicleF.pos(a-delP) - VehicleG.pos(a-delP) -3 ;
             %%Sensor New Data
             if  (not(mod(a,sensSamp))) || (sens2 && not(mod((a-(sensSamp/2)^(1-delComp)),sensSamp)))
                 if sens2
@@ -88,11 +90,11 @@ function resultSave(param,result,parallel,vehicleA,vehicleB)
                 vehPVelF = VehicleE.vel(a-delP) - VehicleF.vel(a-delP);
                 vehPVelG = VehicleF.vel(a-delP) - VehicleG.vel(a-delP);
 
-                vehLDisC = VehicleA.pos(a-delL) - VehicleC.pos(a-delL) -5 ;
-                vehLDisD = VehicleB.pos(a-delL) - VehicleD.pos(a-delL) -5 ;
-                vehLDisE = VehicleC.pos(a-delL) - VehicleE.pos(a-delL) -5 ;
-                vehLDisF = VehicleD.pos(a-delL) - VehicleF.pos(a-delL) -5 ;
-                vehLDisG = VehicleE.pos(a-delL) - VehicleG.pos(a-delL) -5 ;
+                vehLDisC = VehicleA.pos(a-delL) - VehicleC.pos(a-delL) -6 ;
+                vehLDisD = VehicleB.pos(a-delL) - VehicleD.pos(a-delL) -6 ;
+                vehLDisE = VehicleC.pos(a-delL) - VehicleE.pos(a-delL) -6 ;
+                vehLDisF = VehicleD.pos(a-delL) - VehicleF.pos(a-delL) -6 ;
+                vehLDisG = VehicleE.pos(a-delL) - VehicleG.pos(a-delL) -6 ;
 
                 vehLVelC = VehicleA.vel(a-delL) - VehicleC.vel(a-delL);
                 vehLVelD = VehicleB.vel(a-delL) - VehicleD.vel(a-delL);
@@ -116,16 +118,16 @@ function resultSave(param,result,parallel,vehicleA,vehicleB)
                 end
                 
                 if (~delComp) || state
-                    vehCAcc = VCCont.getAcc(vehLDisC,vehPDisC-extraDis,vehLVelC,vehPVelC-extraDis,a); 
-                    vehDAcc = VDCont.getAcc(vehLDisD,vehPDisD-extraDis,vehLVelD,vehPVelD-extraDis,a);
-                    vehEAcc = VECont.getAcc(vehLDisE,vehPDisE-extraDis,vehLVelE,vehPVelE-extraDis,a);
-                    vehFAcc = VFCont.getAcc(vehLDisF,vehPDisF-extraDis,vehLVelF,vehPVelF-extraDis,a);
-                    vehGAcc = VGCont.getAcc(vehLDisG,vehPDisG-extraDis,vehLVelG,vehPVelG-extraDis,a);
+                    vehCAcc = VCCont.getAcc(vehLDisC-2*extraDis,vehPDisC-extraDis,vehLVelC,vehPVelC,a); 
+                    vehDAcc = VDCont.getAcc(vehLDisD-2*extraDis,vehPDisD-extraDis,vehLVelD,vehPVelD,a);
+                    vehEAcc = VECont.getAcc(vehLDisE-2*extraDis,vehPDisE-extraDis,vehLVelE,vehPVelE,a);
+                    vehFAcc = VFCont.getAcc(vehLDisF-2*extraDis,vehPDisF-extraDis,vehLVelF,vehPVelF,a);
+                    vehGAcc = VGCont.getAcc(vehLDisG-2*extraDis,vehPDisG-extraDis,vehLVelG,vehPVelG,a);
                 end
                 %%Condition check
             
             end
-            if a > 2
+            if a > st/period
                 if (VehicleG.acc(end)-VehicleG.acc(end-1))*((-1)^dampCount) > 0
                     dampCount = dampCount + 1;
                 end
@@ -133,10 +135,8 @@ function resultSave(param,result,parallel,vehicleA,vehicleB)
         end
     end
     
-    st = globalVar(11);
-    ed = globalVar(12);
 
-    timePlot = 0:period:(totalTime-ed-st);
+    timePlot = 0:period:(totalTime-st);
     date = datetime('now','Format','y-MMM-d');
     time = datetime('now','Format','HH-mm-ss');
     fileLoc = sprintf('FYP/Image/%s/%d-%f %d %f %s-%d/',...
@@ -165,16 +165,16 @@ function resultSave(param,result,parallel,vehicleA,vehicleB)
     
     
     %close all
-
+    
     fig1 = figure;
     hold on
     %plot(timePlot,VehicleA.acc((st/period:(totalTime-ed)/period)));
     %plot(timePlot,VehicleB.acc((st/period:(totalTime-ed)/period)));
-    plot(timePlot,VehicleC.acc((st/period:(totalTime-ed)/period)));
-    plot(timePlot,VehicleD.acc((st/period:(totalTime-ed)/period)));
-    plot(timePlot,VehicleE.acc((st/period:(totalTime-ed)/period)));
-    plot(timePlot,VehicleF.acc((st/period:(totalTime-ed)/period)));
-    plot(timePlot,VehicleG.acc((st/period:(totalTime-ed)/period)));
+    plot(timePlot,VehicleC.acc(st/period:totalTime/period));
+    plot(timePlot,VehicleD.acc(st/period:totalTime/period));
+    plot(timePlot,VehicleE.acc(st/period:totalTime/period));
+    plot(timePlot,VehicleF.acc(st/period:totalTime/period));
+    plot(timePlot,VehicleG.acc(st/period:totalTime/period));
     title('accleration');
     xlabel('time(s)');
     ylabel('acceleration(ms-2)');
@@ -183,16 +183,18 @@ function resultSave(param,result,parallel,vehicleA,vehicleB)
     imageName = sprintf('%sfig1',fileLoc);
     print(fig1,'-djpeg','-r1000',imageName);
     close(fig1);
+    
+    
 
     fig2 = figure;
     hold on
     %plot(timePlot,VehicleA.vel((st/period:(totalTime-ed)/period)));
     %plot(timePlot,VehicleB.vel((st/period:(totalTime-ed)/period)));
-    plot(timePlot,VehicleC.vel((st/period:(totalTime-ed)/period)));
-    plot(timePlot,VehicleD.vel((st/period:(totalTime-ed)/period)));
-    plot(timePlot,VehicleE.vel((st/period:(totalTime-ed)/period)));
-    plot(timePlot,VehicleF.vel((st/period:(totalTime-ed)/period)));
-    plot(timePlot,VehicleG.vel((st/period:(totalTime-ed)/period)));
+    plot(timePlot,VehicleC.vel(st/period:totalTime/period));
+    plot(timePlot,VehicleD.vel(st/period:totalTime/period));
+    plot(timePlot,VehicleE.vel(st/period:totalTime/period));
+    plot(timePlot,VehicleF.vel(st/period:totalTime/period));
+    plot(timePlot,VehicleG.vel(st/period:totalTime/period));
     title('velocity');
     xlabel('time(s)');
     ylabel('velocity(ms-1)');
@@ -225,20 +227,20 @@ function resultSave(param,result,parallel,vehicleA,vehicleB)
     hold on
     %plot(timePlot,VehicleA.pos((st/period:(totalTime-ed)/period))...
     %            -VehicleB.pos((st/period:(totalTime-ed)/period)));
-    plot(timePlot,VehicleB.pos((st/period:(totalTime-ed)/period))...
-                -VehicleC.pos((st/period:(totalTime-ed)/period)));
-    plot(timePlot,VehicleB.pos((st/period:(totalTime-ed)/period))...
-                -VehicleD.pos((st/period:(totalTime-ed)/period)));
-    plot(timePlot,VehicleB.pos((st/period:(totalTime-ed)/period))...
-                -VehicleE.pos((st/period:(totalTime-ed)/period)));
-    plot(timePlot,VehicleB.pos((st/period:(totalTime-ed)/period))...
-                -VehicleF.pos((st/period:(totalTime-ed)/period)));
-    plot(timePlot,VehicleB.pos((st/period:(totalTime-ed)/period))...
-                -VehicleG.pos((st/period:(totalTime-ed)/period)));
+    plot(timePlot,VehicleB.pos(st/period:totalTime/period)...
+                -VehicleC.pos(st/period:totalTime/period));
+    plot(timePlot,VehicleB.pos(st/period:totalTime/period)...
+                -VehicleD.pos(st/period:totalTime/period));
+    plot(timePlot,VehicleB.pos(st/period:totalTime/period)...
+                -VehicleE.pos(st/period:totalTime/period));
+    plot(timePlot,VehicleB.pos(st/period:totalTime/period)...
+                -VehicleF.pos(st/period:totalTime/period));
+    plot(timePlot,VehicleB.pos(st/period:totalTime/period)...
+                -VehicleG.pos(st/period:totalTime/period));
     title('position different');
     xlabel('time(s)');
     ylabel('position(m)');
-    legend({'C','D','E','F','G'},'Location','southeast');
+    legend({'A','B','C','D','E'},'Location','southeast');
     hold off
     imageName = sprintf('%sfig4',fileLoc);
     print(fig4,'-djpeg','-r1000',imageName);

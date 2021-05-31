@@ -16,7 +16,7 @@ function [reward] = vehicleRunning(param,vehicleA,vehicleB,accF,disF)
     dampFactor = globalVar(10);
     delComp = globalVar(8);
     extraDis = globalVar(9);
-    %st = globalVar(11);
+    st = globalVar(11);
     sens2 = globalVar(13);
     
     u = param(1);
@@ -93,11 +93,11 @@ function [reward] = vehicleRunning(param,vehicleA,vehicleB,accF,disF)
                 vehPVelF = VehicleE.vel(a-delP) - VehicleF.vel(a-delP);
                 vehPVelG = VehicleF.vel(a-delP) - VehicleG.vel(a-delP);
 
-                vehLDisC = VehicleA.pos(a-delL) - VehicleC.pos(a-delL) -5 ;
-                vehLDisD = VehicleB.pos(a-delL) - VehicleD.pos(a-delL) -5 ;
-                vehLDisE = VehicleC.pos(a-delL) - VehicleE.pos(a-delL) -5 ;
-                vehLDisF = VehicleD.pos(a-delL) - VehicleF.pos(a-delL) -5 ;
-                vehLDisG = VehicleE.pos(a-delL) - VehicleG.pos(a-delL) -5 ;
+                vehLDisC = VehicleA.pos(a-delL) - VehicleC.pos(a-delL) -6 ;
+                vehLDisD = VehicleB.pos(a-delL) - VehicleD.pos(a-delL) -6 ;
+                vehLDisE = VehicleC.pos(a-delL) - VehicleE.pos(a-delL) -6 ;
+                vehLDisF = VehicleD.pos(a-delL) - VehicleF.pos(a-delL) -6 ;
+                vehLDisG = VehicleE.pos(a-delL) - VehicleG.pos(a-delL) -6 ;
 
                 vehLVelC = VehicleA.vel(a-delL) - VehicleC.vel(a-delL);
                 vehLVelD = VehicleB.vel(a-delL) - VehicleD.vel(a-delL);
@@ -121,18 +121,18 @@ function [reward] = vehicleRunning(param,vehicleA,vehicleB,accF,disF)
                 end
                 
                 if (~delComp) || state
-                    vehCAcc = VCCont.getAcc(vehLDisC,vehPDisC-extraDis,vehLVelC,vehPVelC-extraDis,a); 
-                    vehDAcc = VDCont.getAcc(vehLDisD,vehPDisD-extraDis,vehLVelD,vehPVelD-extraDis,a);
-                    vehEAcc = VECont.getAcc(vehLDisE,vehPDisE-extraDis,vehLVelE,vehPVelE-extraDis,a);
-                    vehFAcc = VFCont.getAcc(vehLDisF,vehPDisF-extraDis,vehLVelF,vehPVelF-extraDis,a);
-                    vehGAcc = VGCont.getAcc(vehLDisG,vehPDisG-extraDis,vehLVelG,vehPVelG-extraDis,a);
+                    vehCAcc = VCCont.getAcc(vehLDisC-2*extraDis,vehPDisC-extraDis,vehLVelC,vehPVelC,a); 
+                    vehDAcc = VDCont.getAcc(vehLDisD-2*extraDis,vehPDisD-extraDis,vehLVelD,vehPVelD,a);
+                    vehEAcc = VECont.getAcc(vehLDisE-2*extraDis,vehPDisE-extraDis,vehLVelE,vehPVelE,a);
+                    vehFAcc = VFCont.getAcc(vehLDisF-2*extraDis,vehPDisF-extraDis,vehLVelF,vehPVelF,a);
+                    vehGAcc = VGCont.getAcc(vehLDisG-2*extraDis,vehPDisG-extraDis,vehLVelG,vehPVelG,a);
                 end
                 
             end
         end
         
         %%Condition check
-        if a > 2
+        if a > st/period
             if (VehicleG.acc(end)-VehicleG.acc(end-1))*((-1)^dampCount) > 0
                 dampCount = dampCount + 1;
             end
@@ -150,6 +150,6 @@ function [reward] = vehicleRunning(param,vehicleA,vehicleB,accF,disF)
     maxDisG = max(VehicleF.pos-VehicleG.pos);
     reward =  -((maxDisC * maxDisD * maxDisE * maxDisF * maxDisG)^ disFactor) * ...
                         dampCount^dampFactor * ...
-                        accFactor^( 1 + abs(maxAcc-2.5) + abs(minAcc + 4.5));
+                        accFactor^( 1 + abs(maxAcc) + abs(minAcc));
     
 end
