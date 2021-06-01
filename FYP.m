@@ -5,7 +5,11 @@
 tic
 addpath(genpath('D:/WL/UTM/FYP'))
 
-[VehicleA,VehicleB] = VehicleGeneration(10,-5);
+%[VehicleA,VehicleB] = VehicleGeneration(10,-5);
+
+load VehicleLeadPrec.mat VehLead VehPrec
+VehicleA = VehLead;
+VehicleB = VehPrec;
 
 fprintf("%s\nStarting FYP ...\n",datetime('now','Format','y-MMM-d HH-mm-ss'));
 
@@ -20,7 +24,7 @@ parfor parallel = 1:maxParallel
     maxWorker = 14;
     param = [0.000,-2.488,14.872,2.348,0.092,1.694];
     prevResult = minReward;
-    step = 0.001*2^12;
+    step = 0.01*2^9;
     prevWorker = maxWorker + 2;
     bestWorker = maxWorker + 2;
     flag = 0;
@@ -56,7 +60,7 @@ parfor parallel = 1:maxParallel
             %        && bestWorker < 13) || (bestWorkerOld == bestWorker && bestWorker < maxWorker + 2)) ...
             elseif flag == 1 && (bestWorker == 13  || maxResult == prevResult)
                 step = step/2;
-                if step < 0.001
+                if step < 0.01
                     %fprintf("low step = %f\n",step);
                     break
                 end
