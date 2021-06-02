@@ -167,6 +167,12 @@ function [reward] = vehicleRunning(param,vehicleA,vehicleB,accF,disF)
     if accIncrease < 0.9999
         accIncrease = 0.9999;
     end
+    if maxAcc < 1.12
+        maxAcc = 1.12;
+    end
+    if minAcc > -0.56
+        minAcc = -0.56;
+    end
     
                 
     

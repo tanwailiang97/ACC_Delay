@@ -13,7 +13,7 @@ VehicleB = VehPrec;
 
 fprintf("%s\nStarting FYP ...\n",datetime('now','Format','y-MMM-d HH-mm-ss'));
 
-maxParallel = 20;    
+maxParallel = 10;    
 
 parfor parallel = 1:maxParallel
     
