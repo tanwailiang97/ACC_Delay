@@ -22,7 +22,7 @@ parfor parallel = 1:maxParallel
     disFactor = globalVar(7);
     fprintf("%s\nStarting Parallel...%d\n",datetime('now','Format','y-MMM-d HH-mm-ss'),parallel);
     maxWorker = 14;
-    param = [0.000,-2.488,14.872,2.348,0.092,1.694];
+    param = [0.000,-1.960,1.240,0.800,0.240,0.110];
     prevResult = minReward;
     step = 0.01*2^9;
     prevWorker = maxWorker + 2;
@@ -35,7 +35,8 @@ parfor parallel = 1:maxParallel
         for worker = 3:maxWorker
             %fprintf("Running Worker %d\n",worker);
             if worker > 13 || prevResult == minReward
-                newParam(worker,:) = [0,(randi(1600,1,5)-800)*0.01];
+                newParam(worker,:) = [0,(randi(801,1,1)-801)*0.01,(randi(801,1,4)-1)*0.01];
+                %newParam(worker,:) = [0,(randi(1600,1,5)-800)*0.01];
             elseif worker == 13
                 newParam(worker,:) = param;
             else

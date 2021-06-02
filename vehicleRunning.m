@@ -25,6 +25,12 @@ function [reward] = vehicleRunning(param,vehicleA,vehicleB,accF,disF)
     x = param(4);
     y = param(5);
     z = param(6);
+    
+    if w < 0 || x < 0 || y < 0 || z < 0 || v > 0
+        reward = minReward;
+        %fprintf("%d-Crashed\n",a);
+        return
+    end
 
     VehicleC = Vehicle(1055,3,tao,2,-2,0,20);
     VehicleD = Vehicle(1055,3,tao,2,-2,0,15);
@@ -153,16 +159,20 @@ function [reward] = vehicleRunning(param,vehicleA,vehicleB,accF,disF)
     %maxDisF = max(VehicleE.pos-VehicleF.pos);
     %maxDisG = max(VehicleF.pos-VehicleG.pos);
     
-    minReverse = (1 - min(VehicleC.acc(1:14/period)))* ...
-                 (1 - min(VehicleD.acc(1:14/period)));%* ...
+    accIncrease =  (1 + max(VehicleD.acc) -  max(VehicleC.acc))* ...
+                   (1 - min(VehicleD.acc) +  min(VehicleC.acc));%* ...
      %            (1 - min(VehicleE.acc(1:14/period)))* ...
      %            (1 - min(VehicleF.acc(1:14/period)))* ...
      %            (1 - min(VehicleG.acc(1:14/period)));
+    if accIncrease < 0.9999
+        accIncrease = 0.9999;
+    end
+    
                 
     
     reward =  -((maxDisC * maxDisD )^ disFactor) * ...
                         (dampCount + dampCount2)^dampFactor * ...
-                        accFactor^( 1 + abs(maxAcc) + abs(minAcc));
-                        minReverse ^ 500;
+                        accFactor^( 1 + abs(maxAcc) + abs(minAcc)) * ...
+                        (accIncrease) ^ 500;
     
 end

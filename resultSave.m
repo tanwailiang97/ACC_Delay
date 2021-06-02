@@ -1,4 +1,4 @@
-function [vA,vB]=resultSave(param,result,parallel,vehicleA,vehicleB)
+function [VehC,VehD] = resultSave(param,result,parallel,vehicleA,vehicleB)
     %load Vehicle.mat VehicleA
     VehicleA = vehicleA;
     VehicleB = vehicleB;
@@ -26,9 +26,9 @@ function [vA,vB]=resultSave(param,result,parallel,vehicleA,vehicleB)
     %VehicleB = Vehicle(1055,3,0,3,-6,5,23);
     VehicleC = Vehicle(1055,3,tao,2,-2,0,20);
     VehicleD = Vehicle(1055,3,tao,2,-2,0,15);
-    VehicleE = Vehicle(1055,3,tao,2,-2,0,10);
-    VehicleF = Vehicle(1055,3,tao,2,-2,0,5);
-    VehicleG = Vehicle(1055,3,tao,2,-2,0,0);
+    %VehicleE = Vehicle(1055,3,tao,2,-2,0,10);
+    %VehicleF = Vehicle(1055,3,tao,2,-2,0,5);
+    %VehicleG = Vehicle(1055,3,tao,2,-2,0,0);
     
     %VBCont = AccController(VehicleB,7.92,-0.352,2.96,8.72,0,0);
     VCCont = AccController(VehicleC,u,v,w,x,y,z);
@@ -128,7 +128,7 @@ function [vA,vB]=resultSave(param,result,parallel,vehicleA,vehicleB)
             
             end
             if a > st/period
-                if (VehicleG.acc(end)-VehicleG.acc(end-1))*((-1)^dampCount) > 0
+                if (VehicleD.acc(end)-VehicleD.acc(end-1))*((-1)^dampCount) > 0
                     dampCount = dampCount + 1;
                 end
             end
@@ -141,7 +141,7 @@ function [vA,vB]=resultSave(param,result,parallel,vehicleA,vehicleB)
     time = datetime('now','Format','HH-mm-ss');
     fileLoc = sprintf('FYP/Image/%s/%d-%f %d %f %s-%d/',...
         date,globalVar(8),globalVar(2),dampCount...
-        ,max(VehicleG.acc),time,parallel);
+        ,max(VehicleD.acc),time,parallel);
     
     mkdir(fileLoc)
     txtName = sprintf('%sparam.txt',fileLoc);
@@ -158,7 +158,7 @@ function [vA,vB]=resultSave(param,result,parallel,vehicleA,vehicleB)
     fprintf(fid,"\nExtra Dis\t: %f",globalVar(9));
     fprintf(fid,"\nSensor 2\t: %f",globalVar(13));
     fprintf(fid,"\nDamp Count\t: %d",dampCount);
-    fprintf(fid,"\nMax Distance\t: %f",max(VehicleA.pos-VehicleG.pos));
+    fprintf(fid,"\nMax Distance\t: %f",max(VehicleA.pos-VehicleD.pos));
     
     fclose(fid);
     %writematrix(param,txtName);
@@ -168,8 +168,8 @@ function [vA,vB]=resultSave(param,result,parallel,vehicleA,vehicleB)
     
     fig1 = figure;
     hold on
-    plot(timePlot,VehicleA.acc((st/period:(totalTime-ed)/period)));
-    plot(timePlot,VehicleB.acc((st/period:(totalTime-ed)/period)));
+    plot(timePlot,VehicleA.acc(st/period:totalTime/period));
+    plot(timePlot,VehicleB.acc(st/period:totalTime/period));
     plot(timePlot,VehicleC.acc(st/period:totalTime/period));
     plot(timePlot,VehicleD.acc(st/period:totalTime/period));
     %plot(timePlot,VehicleE.acc(st/period:totalTime/period));
@@ -183,14 +183,11 @@ function [vA,vB]=resultSave(param,result,parallel,vehicleA,vehicleB)
     imageName = sprintf('%sfig1',fileLoc);
     print(fig1,'-djpeg','-r1000',imageName);
     close(fig1);
-    
-    vA = VehicleF;
-    vB = VehicleG;
 
     fig2 = figure;
     hold on
-    plot(timePlot,VehicleA.vel((st/period:(totalTime-ed)/period)));
-    plot(timePlot,VehicleB.vel((st/period:(totalTime-ed)/period)));
+    plot(timePlot,VehicleA.vel(st/period:totalTime/period));
+    plot(timePlot,VehicleB.vel(st/period:totalTime/period));
     plot(timePlot,VehicleC.vel(st/period:totalTime/period));
     plot(timePlot,VehicleD.vel(st/period:totalTime/period));
     %plot(timePlot,VehicleE.vel(st/period:totalTime/period));
@@ -199,7 +196,7 @@ function [vA,vB]=resultSave(param,result,parallel,vehicleA,vehicleB)
     title('velocity');
     xlabel('time(s)');
     ylabel('velocity(ms-1)');
-    legend({'A','B','C','D','E'},'Location','southeast');
+    legend({'A','B','C','D'},'Location','southeast');
     hold off
     imageName = sprintf('%sfig2',fileLoc);
     print(fig2,'-djpeg','-r1000',imageName);
@@ -226,8 +223,8 @@ function [vA,vB]=resultSave(param,result,parallel,vehicleA,vehicleB)
 %}
     fig4 = figure;
     hold on
-    plot(timePlot,VehicleA.pos((st/period:(totalTime-ed)/period))...
-                -VehicleB.pos((st/period:(totalTime-ed)/period)));
+    plot(timePlot,VehicleA.pos(st/period:totalTime/period)...
+                -VehicleB.pos(st/period:totalTime/period));
     plot(timePlot,VehicleA.pos(st/period:totalTime/period)...
                 -VehicleC.pos(st/period:totalTime/period));
     plot(timePlot,VehicleA.pos(st/period:totalTime/period)...
@@ -273,4 +270,7 @@ function [vA,vB]=resultSave(param,result,parallel,vehicleA,vehicleB)
 %}
     
     %close([fig1 fig2 fig3 fig4 fig5]);
+    
+    VehC = VehicleC;
+    VehD = VehicleD;
 end
