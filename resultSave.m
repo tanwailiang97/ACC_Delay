@@ -1,13 +1,13 @@
-function [VehC,VehD] = resultSave(param,result,parallel,vehicleA,vehicleB)
+function [VehC,VehD] = resultSave(param,result,parallel,vehicleA,vehicleB,sensD)
     %load Vehicle.mat VehicleA
     VehicleA = vehicleA;
     VehicleB = vehicleB;
     totalTime = globalVar(0);% time in second
     period = globalVar(1);  %sampling period
-    sensPeriod = globalVar(4);
+    sensPeriod = sensD;%globalVar(4);
     sensSamp = sensPeriod/period;
-    delL = ceil(globalVar(2)/period);
-    delP = ceil(globalVar(3)/period);
+    delL = sensD/period;%ceil(globalVar(2)/period);
+    delP = sensD/period;%ceil(globalVar(3)/period);
     delComp = globalVar(8);
     extraDis = globalVar(9);
     sens2 = globalVar(13);
@@ -135,12 +135,11 @@ function [VehC,VehD] = resultSave(param,result,parallel,vehicleA,vehicleB)
         end
     end
     
-
     timePlot = 0:period:(totalTime-st);
     date = datetime('now','Format','y-MMM-d');
     time = datetime('now','Format','HH-mm-ss');
-    fileLoc = sprintf('FYP/Image/%s/%d-%f %d %f %s-%d/',...
-        date,globalVar(8),globalVar(2),dampCount...
+    fileLoc = sprintf('FYP/Image/%s/%d-%f %f %f %s-%d/',...
+        date,globalVar(8),sensD,max(VehicleA.pos-VehicleD.pos)...
         ,max(VehicleD.acc),time,parallel);
     
     mkdir(fileLoc)
@@ -148,9 +147,9 @@ function [VehC,VehD] = resultSave(param,result,parallel,vehicleA,vehicleB)
     fid = fopen(txtName,'w');
     fprintf(fid,"%.3f,",param);
     fprintf(fid,"\nResult\t: %.20g",result);
-    fprintf(fid,"\nDelay\t: %f,%f",globalVar(2),globalVar(3));
+    fprintf(fid,"\nDelay\t: %f,%f",sensD,sensD);%globalVar(2),globalVar(3));
     fprintf(fid,"\nTao\t: %f",globalVar(14));
-    fprintf(fid,"\nPeriod\t: %f",globalVar(4));
+    fprintf(fid,"\nPeriod\t: %f",sensD);%globalVar(4));
     fprintf(fid,"\nAcc Factor\t: %f",globalVar(6));
     fprintf(fid,"\nDis Factor\t: %f",globalVar(7));
     fprintf(fid,"\nDamp Factor\t: %f",globalVar(10));
@@ -201,26 +200,25 @@ function [VehC,VehD] = resultSave(param,result,parallel,vehicleA,vehicleB)
     imageName = sprintf('%sfig2',fileLoc);
     print(fig2,'-djpeg','-r1000',imageName);
     close(fig2);
-    %{
+    
     fig3 = figure;
     hold on
-    plot(timePlot,VehicleA.pos((st/period:(totalTime-ed)/period)));
-    plot(timePlot,VehicleB.pos((st/period:(totalTime-ed)/period)));
-    plot(timePlot,VehicleC.pos((st/period:(totalTime-ed)/period)));
-    plot(timePlot,VehicleD.pos((st/period:(totalTime-ed)/period)));
-    plot(timePlot,VehicleE.pos((st/period:(totalTime-ed)/period)));
-    plot(timePlot,VehicleF.pos((st/period:(totalTime-ed)/period)));
-    plot(timePlot,VehicleG.pos((st/period:(totalTime-ed)/period)));
-    title('position');
+    plot(timePlot,gradient(VehicleA.acc(st/period:totalTime/period)));
+    plot(timePlot,gradient(VehicleB.acc(st/period:totalTime/period)));
+    plot(timePlot,gradient(VehicleC.acc(st/period:totalTime/period)));
+    plot(timePlot,gradient(VehicleD.acc(st/period:totalTime/period)));
+    %plot(timePlot,VehicleE.vel(st/period:totalTime/period));
+    %plot(timePlot,VehicleF.vel(st/period:totalTime/period));
+    %plot(timePlot,VehicleG.vel(st/period:totalTime/period));
+    title('Jerk');
     xlabel('time(s)');
-    ylabel('position(m)');
-    legend({'A','B','C','D','E','F','G'},'Location','southeast');
+    ylabel('Jerk(ms-3)');
+    legend({'A','B','C','D'},'Location','southeast');
     hold off
     imageName = sprintf('%sfig3',fileLoc);
     print(fig3,'-djpeg','-r1000',imageName);
     close(fig3);
-
-%}
+   
     fig4 = figure;
     hold on
     plot(timePlot,VehicleA.pos(st/period:totalTime/period)...

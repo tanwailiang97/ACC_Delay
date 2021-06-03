@@ -1,15 +1,15 @@
-function [reward] = vehicleRunning(param,vehicleA,vehicleB,accF,disF)
+function [reward] = vehicleRunning(param,vehicleA,vehicleB,accF,disF,sensD)
 
     %fprintf("Running Vehicle\n");
     VehicleA = vehicleA;
     VehicleB = vehicleB;
     totalTime = globalVar(0);% time in second
     period = globalVar(1);  %sampling period
-    sensPeriod = globalVar(4);
+    sensPeriod = sensD;%globalVar(4);
     sensSamp = sensPeriod/period;
     minReward = globalVar(5);
-    delL = ceil(globalVar(2)/period);
-    delP = ceil(globalVar(3)/period);
+    delL = sensD/period;%ceil(globalVar(2)/period);
+    delP = sensD/period;%ceil(globalVar(3)/period);
     accFactor = accF;
     disFactor = disF;
     tao = globalVar(14);
@@ -167,11 +167,11 @@ function [reward] = vehicleRunning(param,vehicleA,vehicleB,accF,disF)
     if accIncrease < 0.9999
         accIncrease = 0.9999;
     end
-    if maxAcc < 1.12
-        maxAcc = 1.12;
+    if maxAcc < 1.119
+        maxAcc = 1.119;
     end
-    if minAcc > -0.56
-        minAcc = -0.56;
+    if minAcc > -0.559
+        minAcc = -0.559;
     end
     
                 
