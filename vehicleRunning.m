@@ -1,15 +1,14 @@
 function [reward] = vehicleRunning(param,vehicleA,vehicleB,accF,disF,sensD)
 
-    %fprintf("Running Vehicle\n");
     VehicleA = vehicleA;
     VehicleB = vehicleB;
     totalTime = globalVar(0);% time in second
     period = globalVar(1);  %sampling period
-    sensPeriod = sensD;%globalVar(4);
+    sensPeriod = sensD;
     sensSamp = round(sensPeriod/period);
     minReward = globalVar(5);
-    delL = round(sensD/period);%ceil(globalVar(2)/period);
-    delP = round(sensD/period);%ceil(globalVar(3)/period);
+    delL = round(sensD/period);
+    delP = round(sensD/period);
     accFactor = accF;
     disFactor = disF;
     tao = globalVar(14);
@@ -28,33 +27,20 @@ function [reward] = vehicleRunning(param,vehicleA,vehicleB,accF,disF,sensD)
     
     if w < 0 || x < 0 || y < 0 || z < 0 || v > 0
         reward = minReward;
-        %fprintf("%d-Crashed\n",a);
         return
     end
 
     VehicleC = Vehicle(1055,3,tao,2,-2,0,20);
     VehicleD = Vehicle(1055,3,tao,2,-2,0,15);
-    %VehicleE = Vehicle(1055,3,tao,2,-2,0,10);
-    %VehicleF = Vehicle(1055,3,tao,2,-2,0,5);
-    %VehicleG = Vehicle(1055,3,tao,2,-2,0,0);
 
     VCCont = AccController(VehicleC,u,v,w,x,y,z);
     VDCont = AccController(VehicleD,u,v,w,x,y,z);
-    %VECont = AccController(VehicleE,u,v,w,x,y,z);
-    %VFCont = AccController(VehicleF,u,v,w,x,y,z);
-    %VGCont = AccController(VehicleG,u,v,w,x,y,z);
     
-    VCDeComp = DelayComp(VehicleC,1,1);
-    VDDeComp = DelayComp(VehicleD,1,1);
-    %VEDeComp = DelayComp(VehicleE,1,1);
-    %VFDeComp = DelayComp(VehicleF,1,1);
-    %VGDeComp = DelayComp(VehicleG,1,1);
+    VCDeComp = DelayComp(VehicleC,1,1,sensD);
+    VDDeComp = DelayComp(VehicleD,1,1,sensD);
 
     vehCAcc = 0;
     vehDAcc = 0;
-    %vehEAcc = 0;
-    %vehFAcc = 0;
-    %vehGAcc = 0;
 
     dampCount = 1;
     dampCount2 = 1;
@@ -64,19 +50,13 @@ function [reward] = vehicleRunning(param,vehicleA,vehicleB,accF,disF,sensD)
 
         VehicleC.move(vehCAcc,a);
         VehicleD.move(vehDAcc,a);
-        %VehicleE.move(vehEAcc,a);
-        %VehicleF.move(vehFAcc,a);
-        %VehicleG.move(vehGAcc,a);
         
         if (a > delP) && (a > delL)
             
             vehPDisC = VehicleB.pos(a-delP) - VehicleC.pos(a-delP) -3 ;
             vehPDisD = VehicleC.pos(a-delP) - VehicleD.pos(a-delP) -3 ;
-            %vehPDisE = VehicleD.pos(a-delP) - VehicleE.pos(a-delP) -3 ;
-            %vehPDisF = VehicleE.pos(a-delP) - VehicleF.pos(a-delP) -3 ;
-            %vehPDisG = VehicleF.pos(a-delP) - VehicleG.pos(a-delP) -3 ;
             %%Crash
-            if vehPDisC <= 0 || vehPDisD <= 0 %|| vehPDisE <= 0 || vehPDisF <= 0 || vehPDisG <= 0
+            if vehPDisC <= 0 || vehPDisD <= 0
                 reward = minReward;
                 %fprintf("%d-Crashed\n",a);
                 return
@@ -93,46 +73,27 @@ function [reward] = vehicleRunning(param,vehicleA,vehicleB,accF,disF,sensD)
                     state = 2;
                 end
                 
-                %}
                 vehPVelC = VehicleB.vel(a-delP) - VehicleC.vel(a-delP);
                 vehPVelD = VehicleC.vel(a-delP) - VehicleD.vel(a-delP);
-                %vehPVelE = VehicleD.vel(a-delP) - VehicleE.vel(a-delP);
-                %vehPVelF = VehicleE.vel(a-delP) - VehicleF.vel(a-delP);
-                %vehPVelG = VehicleF.vel(a-delP) - VehicleG.vel(a-delP);
 
                 vehLDisC = VehicleA.pos(a-delL) - VehicleC.pos(a-delL) -6 ;
                 vehLDisD = VehicleB.pos(a-delL) - VehicleD.pos(a-delL) -6 ;
-                %vehLDisE = VehicleC.pos(a-delL) - VehicleE.pos(a-delL) -6 ;
-                %vehLDisF = VehicleD.pos(a-delL) - VehicleF.pos(a-delL) -6 ;
-                %vehLDisG = VehicleE.pos(a-delL) - VehicleG.pos(a-delL) -6 ;
 
                 vehLVelC = VehicleA.vel(a-delL) - VehicleC.vel(a-delL);
                 vehLVelD = VehicleB.vel(a-delL) - VehicleD.vel(a-delL);
-                %vehLVelE = VehicleC.vel(a-delL) - VehicleE.vel(a-delL);
-                %vehLVelF = VehicleD.vel(a-delL) - VehicleF.vel(a-delL);
-                %vehLVelG = VehicleE.vel(a-delL) - VehicleG.vel(a-delL);
                 
                 if delComp
                     [vehPVelC,vehPDisC] = VCDeComp.get(vehPVelC,vehPDisC,a,state,VehicleB.acc(a-delL));
                     [vehPVelD,vehPDisD] = VDDeComp.get(vehPVelD,vehPDisD,a,state,VehicleC.acc(a-delL));
-                    %[vehPVelE,vehPDisE] = VEDeComp.get(vehPVelE,vehPDisE,a,state,VehicleD.acc(a-delL));
-                    %[vehPVelF,vehPDisF] = VFDeComp.get(vehPVelF,vehPDisF,a,state,VehicleE.acc(a-delL));
-                    %[vehPVelG,vehPDisG] = VGDeComp.get(vehPVelG,vehPDisG,a,state,VehicleF.acc(a-delL));
                     
-                    [vehLVelC,vehLDisC] = VGDeComp.get(vehLVelC,vehLDisC,a,state,VehicleA.acc(a-delL));
-                    [vehLVelD,vehLDisD] = VGDeComp.get(vehLVelD,vehLDisD,a,state,VehicleB.acc(a-delL));
-                    %[vehLVelE,vehLDisE] = VGDeComp.get(vehLVelE,vehLDisE,a,state,VehicleC.acc(a-delL));
-                    %[vehLVelF,vehLDisF] = VGDeComp.get(vehLVelF,vehLDisF,a,state,VehicleD.acc(a-delL));
-                    %[vehLVelG,vehLDisG] = VGDeComp.get(vehLVelG,vehLDisG,a,state,VehicleE.acc(a-delL));
+                    [vehLVelC,vehLDisC] = VCDeComp.get(vehLVelC,vehLDisC,a,state,VehicleA.acc(a-delL));
+                    [vehLVelD,vehLDisD] = VDDeComp.get(vehLVelD,vehLDisD,a,state,VehicleB.acc(a-delL));
                     
                 end
                 
                 if (~delComp) || state
                     vehCAcc = VCCont.getAcc(vehLDisC-2*extraDis,vehPDisC-extraDis,vehLVelC,vehPVelC,a); 
                     vehDAcc = VDCont.getAcc(vehLDisD-2*extraDis,vehPDisD-extraDis,vehLVelD,vehPVelD,a);
-                    %vehEAcc = VECont.getAcc(vehLDisE-2*extraDis,vehPDisE-extraDis,vehLVelE,vehPVelE,a);
-                    %vehFAcc = VFCont.getAcc(vehLDisF-2*extraDis,vehPDisF-extraDis,vehLVelF,vehPVelF,a);
-                    %vehGAcc = VGCont.getAcc(vehLDisG-2*extraDis,vehPDisG-extraDis,vehLVelG,vehPVelG,a);
                 end
                 
             end
@@ -155,23 +116,20 @@ function [reward] = vehicleRunning(param,vehicleA,vehicleB,accF,disF,sensD)
 
     maxDisC = max(VehicleB.pos-VehicleC.pos);
     maxDisD = max(VehicleC.pos-VehicleD.pos);
-    %maxDisE = max(VehicleD.pos-VehicleE.pos);
-    %maxDisF = max(VehicleE.pos-VehicleF.pos);
-    %maxDisG = max(VehicleF.pos-VehicleG.pos);
     
-    accIncrease =  (1 + max(VehicleD.acc) -  max(VehicleC.acc))* ...
-                   (1 - min(VehicleD.acc) +  min(VehicleC.acc));%* ...
-     %            (1 - min(VehicleE.acc(1:14/period)))* ...
-     %            (1 - min(VehicleF.acc(1:14/period)))* ...
-     %            (1 - min(VehicleG.acc(1:14/period)));
+    accIncrease =  1000*(0.001 + max(VehicleD.acc) -  max(VehicleB.acc))* ...
+                   1000*(0.001 - min(VehicleD.acc) +  min(VehicleB.acc));
+               
     if accIncrease < 0.9999
         accIncrease = 0.9999;
     end
-    if maxAcc < 1.119
-        maxAcc = 1.119;
+    if maxAcc < 1.109
+        maxAcc = 1.109;
+    elseif maxAcc > 1.1202
+        maxAcc = 30;
     end
-    if minAcc > -0.559
-        minAcc = -0.559;
+    if minAcc > -0.549
+        minAcc = -0.549;
     end
     
                 
@@ -179,6 +137,6 @@ function [reward] = vehicleRunning(param,vehicleA,vehicleB,accF,disF,sensD)
     reward =  -((maxDisC * maxDisD )^ disFactor) * ...
                         (dampCount + dampCount2)^dampFactor * ...
                         accFactor^( 1 + abs(maxAcc) + abs(minAcc)) * ...
-                        (accIncrease) ^ 500;
+                        (accIncrease) ^ 5;
     
 end
