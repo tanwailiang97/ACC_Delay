@@ -5,7 +5,7 @@ classdef Vehicle < handle
         acc = 0;                %Accleration
         jerk = 0;
         sig = 0;                %Desire Accleration
-        tao = 0.5;              %Actuator Delay
+        tao = 0.2;              %Actuator Delay
         maxAcc = 3;             %Maximum Accleration
         minAcc = -6;            %Minimum Accleration
         period = globalVar(1);  %Global Sampling Period

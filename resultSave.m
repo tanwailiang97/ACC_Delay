@@ -15,7 +15,7 @@ function [VehC,VehD] = resultSave(param,result,parallel,vehicleA,vehicleB,sensD)
     
     st = globalVar(11);
     
-    u = param(1);
+    u = param(1); % = 0
     v = param(2);
     w = param(3);
     x = param(4);
@@ -44,7 +44,7 @@ function [VehC,VehD] = resultSave(param,result,parallel,vehicleA,vehicleB,sensD)
             vehPDisC = VehicleB.pos(a-delP) - VehicleC.pos(a-delP) -3 ;
             vehPDisD = VehicleC.pos(a-delP) - VehicleD.pos(a-delP) -3 ;
             %%Sensor New Data
-            if  (not(mod(a,sensSamp))) || (sens2 && not(mod((a-(sensSamp/2)^(1-delComp)),sensSamp)))
+            if  (not(mod(a,sensSamp)))
                 if sens2
                     if not(mod(a,sensSamp))
                         state = 0;
@@ -73,10 +73,8 @@ function [VehC,VehD] = resultSave(param,result,parallel,vehicleA,vehicleB,sensD)
                     
                 end
                 
-                if (~delComp) || state
-                    vehCAcc = VCCont.getAcc(vehLDisC-2*extraDis,vehPDisC-extraDis,vehLVelC,vehPVelC,a); 
-                    vehDAcc = VDCont.getAcc(vehLDisD-2*extraDis,vehPDisD-extraDis,vehLVelD,vehPVelD,a);
-                end
+                vehCAcc = VCCont.getAcc(vehLDisC-2*extraDis,vehPDisC-extraDis,vehLVelC,vehPVelC,a); 
+                vehDAcc = VDCont.getAcc(vehLDisD-2*extraDis,vehPDisD-extraDis,vehLVelD,vehPVelD,a);
             
             end
             if a > st/period
@@ -90,7 +88,7 @@ function [VehC,VehD] = resultSave(param,result,parallel,vehicleA,vehicleB,sensD)
     timePlot = 0:period:(totalTime-st);
     date = datetime('now','Format','y-MMM-d');
     time = datetime('now','Format','HH-mm-ss');
-    fileLoc = sprintf('FYP/Image/%s/%d-%f %f %f %s-%d/',...
+    fileLoc = sprintf('Image/%s/%d-%f %f %f %s-%d/',...
         date,globalVar(8),sensD,max(VehicleA.pos-VehicleD.pos)...
         ,max([VehicleD.acc VehicleC.acc]),time,parallel);
     

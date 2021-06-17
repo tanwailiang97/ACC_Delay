@@ -22,11 +22,11 @@ classdef AccController < handle
             %   kp1 & 2 :Spring constant    (Scalar)
             %   kv1 & 2 :Damper Constant    (Scalar)
             obj.vehicle = vehicle;
-            obj.k0 = k0;
-            obj.kpP = kpP;
-            obj.kvP = kvP;
-            obj.kpL = kpL;
-            obj.kvL = kvL;
+            obj.k0 = k0;    % = 0
+            obj.kpP = kpP;  %kp1
+            obj.kvP = kvP;  %kv1 
+            obj.kpL = kpL;  %kp2 = 0
+            obj.kvL = kvL;  %kv2 = 0
             obj.kv = kv;
         end
         
